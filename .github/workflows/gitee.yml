@@ -1,4 +1,11 @@
 # File: .github/workflows/gitee.yml
+on:
+  workflow_dispatch:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # UTC 20:00 -> CST (China) 4:00, see https://datetime360.com/cn/utc-cst-china-time/
+    - cron: '* */2 * * *'
+
 name: GitHub to Gitee
 jobs:
   run:
