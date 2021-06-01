@@ -21,6 +21,6 @@ jobs:
         dst: gitee/superbei666
         dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
         dst_token:  ${{ secrets.GITEE_TOKEN }}
-        static_list: 'dockerfile'
+        static_list: 'evine-dockerfile'
         force_update: true
         debug: true
