@@ -171,11 +171,14 @@ armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](h
 **遗忘登陆密码，如何重置**
 
 ```
+# 进入容器
+docker exec -it qbittorrent bash
+
 # 如果启用了ssl
-docker exec qbittorrent curl -k -X POST -d 'json={"web_ui_username":"新的用户名","web_ui_password":"新的密码"}' https://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
+curl -k -X POST -d 'json={"web_ui_username":"新的用户名","web_ui_password":"新的密码"}' https://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
 
 # 如果未启用ssl
-docker exec qbittorrent curl -X POST -d 'json={"web_ui_username":"新的用户名","web_ui_password":"新的密码"}' http://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
+curl -X POST -d 'json={"web_ui_username":"新的用户名","web_ui_password":"新的密码"}' http://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
 ```
 
 **如何与emby, jellyfin, plex等等配合使用**
@@ -185,11 +188,14 @@ docker exec qbittorrent curl -X POST -d 'json={"web_ui_username":"新的用户�
 **启用了其他非官方webui，导致webui打不开，如何关闭**
 
 ```
+# 进入容器
+docker exec -it qbittorrent bash
+
 # 如果启用了ssl
-docker exec qbittorrent curl -k -X POST -d 'json={"alternative_webui_enabled":false}' https://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
+curl -k -X POST -d 'json={"alternative_webui_enabled":false}' https://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
 
 # 如果未启用ssl
-docker exec qbittorrent curl -X POST -d 'json={"alternative_webui_enabled":false}' http://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
+curl -X POST -d 'json={"alternative_webui_enabled":false}' http://127.0.0.1:${WEBUI_PORT}/api/v2/app/setPreferences
 ```
 
 **安装了watchtower，如何让qbittorrent不被watchtower自动更新**
