@@ -28,7 +28,7 @@ WebUI\Address=*
 WebUI\AlternativeUIEnabled=false
 WebUI\Enabled=false
 WebUI\LocalHostAuth=false
-WebUI\Port=${WEBUI_PORT-:8080}
+WebUI\Port=${WEBUI_PORT}
 EOL
     fi
 

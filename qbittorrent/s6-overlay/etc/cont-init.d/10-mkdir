@@ -1,52 +1,24 @@
 #!/usr/bin/with-contenv bash
 
 make_dir() {
-    echo "make some directory..."
-    if [ ! -d /data/cache ]; then
-        mkdir /data/cache
-    fi
-    if [ ! -d /data/certs ]; then
-        mkdir /data/certs
-    fi
-    if [ ! -d /data/config ]; then
-        mkdir /data/config
-    fi
-    if [ ! -d /data/data/logs ]; then
-        mkdir -p /data/data/logs
-    fi
-    if [ ! -d /data/downloads ]; then
-        mkdir /data/downloads
-    fi
-    if [ ! -d /data/temp ]; then
-        mkdir /data/temp
-    fi
-    if [ ! -d /data/torrents ]; then
-        mkdir /data/torrents
-    fi
-    if [ ! -d /data/watch ]; then
-        mkdir /data/watch
-    fi
-    if [ ! -d /data/webui ]; then
-        mkdir /data/webui
-    fi
-    if [ ! -d ${QBITTORRENT_HOME}/qBittorrent ]; then
-        mkdir -p ${QBITTORRENT_HOME}/qBittorrent
-    fi
-    if [[ $(readlink -f ${QBITTORRENT_HOME}/qBittorrent/cache 2>/dev/null) != /data/cache ]]; then
-        rm -rf ${QBITTORRENT_HOME}/qBittorrent/cache
-        ln -sf /data/cache ${QBITTORRENT_HOME}/qBittorrent/cache
-    fi
-    if [[ $(readlink -f ${QBITTORRENT_HOME}/qBittorrent/config 2>/dev/null) != /data/config ]]; then
-        rm -rf ${QBITTORRENT_HOME}/qBittorrent/config
-        ln -sf /data/config ${QBITTORRENT_HOME}/qBittorrent/config
-    fi
-    if [[ $(readlink -f ${QBITTORRENT_HOME}/qBittorrent/data 2>/dev/null) != /data/data ]]; then
-        rm -rf ${QBITTORRENT_HOME}/qBittorrent/data
-        ln -sf /data/data ${QBITTORRENT_HOME}/qBittorrent/data
-    fi
+    echo "Make some folders..."
+    
+    cd /data
+    local dirs1=( cache certs config data/logs downloads temp torrents watch webui ${QBITTORRENT_HOME}/qBittorrent )
+    for dir in ${dirs1[@]}; do
+        [ ! -d $dir ] && mkdir -p $dir
+    done
+
+    local dirs2=( cache config data )
+    for dir in ${dirs2[@]}; do
+        if [[ $(readlink -f ${QBITTORRENT_HOME}/qBittorrent/$dir 2>/dev/null) != /data/$dir ]]; then
+            rm -rf ${QBITTORRENT_HOME}/qBittorrent/$dir
+            ln -sf /data/$dir ${QBITTORRENT_HOME}/qBittorrent/$dir
+        fi
+    done
+
     if [[ $(readlink -f /data/logs 2>/dev/null) != /data/data/logs ]]; then
         rm -rf /data/logs
-        cd /data
         ln -sf data/logs logs
     fi
 }

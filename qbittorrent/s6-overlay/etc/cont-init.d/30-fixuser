@@ -3,7 +3,7 @@
 fix_user() {
     PUID=${PUID:-1500}
     PGID=${PGID:-1500}
-    echo "change owner to user qbittorrent..."
+    echo "Change owner to user qbittorrent..."
     echo "PUID=${PUID}"
     echo "PGID=${PGID}"
     groupmod -o -g "$PGID" qbittorrent
