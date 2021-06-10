@@ -238,7 +238,7 @@ docker logs -f qbittorrent
 
 - Dockerfile、构建脚本、以及构建日志请见：https://github.com/nevinen/dockerfiles/blob/master/qbittorrent
 
-## 参考：
+## 参考
 
 - [crazymax/qbittorrent](https://hub.docker.com/r/crazymax/qbittorrent) , 参考了Dockerfile; 
   
