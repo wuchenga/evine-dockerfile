@@ -13,6 +13,10 @@
 - 多标签可用，其中`latest` `4` `4.x` `4.x.x`是多平台标签，可用平台：`amd64` `arm/v7` `arm64`，其他标签均为单平台标签。
 - ![钉钉通知效果图](https://github.com/nevinen/dockerfiles/blob/master/qbittorrent/notify.png)
 
+## 更新日志
+
+- [2021-06-08] qBittorrent 4.3.5: Qt 5.15.2, Libtorrent 1.2.13, Boost 1.72.0, OpenSSL 1.1.1k, zlib 1.2.11
+
 ## 创建
 
 **docker cli**
