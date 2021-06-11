@@ -79,6 +79,10 @@ services:
         ipv4_address: <你想设置的ip>
         aliases:
           - qbittorrent
+    dns:   # docker是无法为macvlan网络提供dns解析服务的，要想正常在macvlan网络上发通知，请给容器添加dns服务器，你也可以直接使用你的网关ip作为dns服务器
+      - 223.5.5.5
+      - 114.114.114.114
+      - 1.2.4.8
     hostname: qbitorrent
     volumes:
       - ./data:/data
