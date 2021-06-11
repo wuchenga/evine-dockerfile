@@ -62,6 +62,8 @@ services:
       - 8080:8080        # 冒号左右一致，必须同WEBUI_PORT
       - 34567:34567      # 冒号左右一致，必须同BT_PORT
       - 34567:34567/udp  # 冒号左右一致，必须同BT_PORT
+    #security_opt:       # armv7设备请解除这两行注释
+      #- seccomp=unconfined
 ```
 
 如若想将qbittorrent建立在已经创建好的macvlan网络上，可以按如下方式创建：
@@ -90,18 +92,15 @@ services:
       - WEBUI_PORT=8080   # WEBUI控制端口，可自定义
       - BT_PORT=34567     # BT监听端口，可自定义
       - TZ=Asia/Shanghai  # 时区
+    #security_opt:        # armv7设备请解除这两行注释
+      #- seccomp=unconfined
 
 networks: 
   <你的macvlan网络名称>:
     external: true
 ```
 
-armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。可以在docker-compose.yml中增加以下内容来解决：
-
-```
-    security_opt:
-      - seccomp=unconfined
-```
+armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。
 
 ## 环境变量清单
 
