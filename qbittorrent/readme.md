@@ -6,16 +6,18 @@
 - 故障时发送通知，可选途径同上；
 - 每4小时检查一下tracker状态，如发现种子的tracker状态有问题，将给该种子添加`TrackerError`的标签，方便筛选；
 - 日志输出到docker控制台，可从portainer查看；
-- 集成了`python`；
-- 即使集成了`python`，体积仍然很小；
+- `python`为可选项，设置为`true`才安装（详见环境变量清单）；
+- 体积很小；
 - 默认中文UI；
 - 默认东八区时区；
-- 多标签可用，其中`latest` `4` `4.x` `4.x.x`是多平台标签，可用平台：`amd64` `arm/v7` `arm64`，其他标签均为单平台标签。
+- 多标签可用，其中`latest` `4` `4.x` `4.x.x`是多平台标签，可用平台：`amd64` `386` `arm/v6` `arm/v7` `arm64` `s390x` `ppc64le`，其他标签均为单平台标签。
 - ![钉钉通知效果图](https://github.com/nevinen/dockerfiles/blob/master/qbittorrent/notify.png)
 
 ## 更新日志
 
-- [2021-06-08] qBittorrent 4.3.5: Qt 5.15.2, Libtorrent 1.2.13, Boost 1.72.0, OpenSSL 1.1.1k, zlib 1.2.11
+| Date       | qBittorrent | Qt      | Libtorrent | Boost  | OpenSSL | zlib    |
+| :-:        | :-:         | :-:     | :-:        | :-:    | :-:     | :-:     |
+| 2021-06-08 | 4.3.5       | 5.15.2  | 1.2.13     | 1.72.0 | 1.1.1k  | 1.2.11  |
 
 ## 创建
 
@@ -111,17 +113,18 @@ armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](h
 |  1  | PUID               | 1500          | 用户的uid，以该用户运行qbittorrent-nox。 |
 |  2  | PGID               | 1500          | 用户的gid，以该用户运行qbittorrent-nox。 |
 |  3  | TZ                 | Asia/Shanghai | 时区 |
-|  4  | UMASK_SET          | 000           | umask|
-|  5  | TG_USER_ID         |               | 通知渠道telegram，如需使用需要和 TG_BOT_TOKEN 同时赋值，私聊 @getuseridbot 获取。 |
-|  6  | TG_BOT_TOKEN       |               | 通知渠道telegram，如需使用需要和 TG_USER_ID 同时赋值，私聊 @BotFather 获取。 |
-|  7  | DD_BOT_TOKEN       |               | 通知渠道钉钉，如需使用需要和 DD_BOT_SECRET 同时赋值，机器人设置中webhook链接`access_token=`后面的字符串（不含`=`以及`=`之前的字符）。 |
-|  8  | DD_BOT_SECRET      |               | 通知渠道钉钉，如需使用需要和 DD_BOT_TOKEN 同时赋值，机器人设置中启用`加签`，加签的秘钥，形如：`SEC1234567890abcdefg`。 |
-|  9  | IYUU_TOKEN         |               | 通知渠道爱语飞飞，通过 http://iyuu.cn/ 获取。 |
-|  10 | SCKEY              |               | 通知渠道ServerChan，通过 http://sc.ftqq.com/3.version 获取。 |
-|  11 | CRON_HEALTH_CHECK  | 12 * * * *    | 宕机检查的cron，在设定的cron运行时如发现qbittorrent-nox宕机了，则向设置的通知渠道发送通知，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。 |
-|  12 | CRON_AUTO_CATEGORY | 32 */2 * * *  | 自动分类的cron，在设定的cron将所有种子按tracker分类，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
-|  13 | CRON_TRACKER_ERROR | 52 */4 * * *  | 检查tracker状态是否健康的cron，在设定的cron将检查所有种子的tracker状态，如果有问题就打上`TrackerError`的标签，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
-|  14 | DL_FINISH_NOTIFY   | true          | 默认会在下载完成时向设定的通知渠道发送种子下载完成的通知消息，如不想收此类通知，则输入`false` |
+|  4  | INSTALL_PYTHON     | false         | 默认不安装python，如需要python，请设置为`true`，设置后将在首次启动容器时自动安装好。 |
+|  5  | UMASK_SET          | 000           | umask |
+|  6  | TG_USER_ID         |               | 通知渠道telegram，如需使用需要和 TG_BOT_TOKEN 同时赋值，私聊 @getuseridbot 获取。 |
+|  7  | TG_BOT_TOKEN       |               | 通知渠道telegram，如需使用需要和 TG_USER_ID 同时赋值，私聊 @BotFather 获取。 |
+|  8  | DD_BOT_TOKEN       |               | 通知渠道钉钉，如需使用需要和 DD_BOT_SECRET 同时赋值，机器人设置中webhook链接`access_token=`后面的字符串（不含`=`以及`=`之前的字符）。 |
+|  9  | DD_BOT_SECRET      |               | 通知渠道钉钉，如需使用需要和 DD_BOT_TOKEN 同时赋值，机器人设置中启用`加签`，加签的秘钥，形如：`SEC1234567890abcdefg`。 |
+|  10 | IYUU_TOKEN         |               | 通知渠道爱语飞飞，通过 http://iyuu.cn/ 获取。 |
+|  11 | SCKEY              |               | 通知渠道ServerChan，通过 http://sc.ftqq.com/3.version 获取。 |
+|  12 | CRON_HEALTH_CHECK  | 12 * * * *    | 宕机检查的cron，在设定的cron运行时如发现qbittorrent-nox宕机了，则向设置的通知渠道发送通知，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。 |
+|  13 | CRON_AUTO_CATEGORY | 32 */2 * * *  | 自动分类的cron，在设定的cron将所有种子按tracker分类，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
+|  14 | CRON_TRACKER_ERROR | 52 */4 * * *  | 检查tracker状态是否健康的cron，在设定的cron将检查所有种子的tracker状态，如果有问题就打上`TrackerError`的标签，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
+|  15 | DL_FINISH_NOTIFY   | true          | 默认会在下载完成时向设定的通知渠道发送种子下载完成的通知消息，如不想收此类通知，则输入`false` |
 
 ## 目录说明
 

@@ -12,4 +12,5 @@ if [[ -z ${CRON_TRACKER_ERROR} ]]; then
     CRON_TRACKER_ERROR="52 */4 * * *"
 fi
 
+echo "Set crontab to system..."
 echo -e "${CRON_HEALTH_CHECK} health-check\n${CRON_AUTO_CATEGORY} auto-cat -a\n${CRON_TRACKER_ERROR} tracker-error" | crontab -
