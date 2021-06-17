@@ -3,7 +3,7 @@
 set -e
 
 ## 要构建的平台
-BUILDX_ARCH=( amd64 arm/v7 arm64 arm/v6 ppc64le 386 )
+BUILDX_ARCH=( amd64 arm/v7 arm64 arm/v6 386 s390x )
 
 ## qBittorrent的各种版本号
 RELEASE_SEMVER=${QB_FULL_VERSION}
@@ -28,14 +28,21 @@ for arch in "${BUILDX_ARCH[@]}"; do
     docker buildx build $cmd_tag \
         --cache-from "type=local,src=/tmp/.buildx-cache" \
         --cache-to "type=local,dest=/tmp/.buildx-cache" \
-        --output "type=image,push=true" \
+        --output "type=docker" \
         --platform linux/${arch} \
         --build-arg "QBITTORRENT_VERSION=${QB_FULL_VERSION}" \
         --build-arg "LIBTORRENT_VERSION=${LIBTORRENT_FULL_VERSION}" \
-        -f ${DOCKERFILE_NAME} \
+        --file ${DOCKERFILE_NAME} \
         .
 
     IMAGES+=( "${DOCKERHUB_REPOSITORY}:${RELEASE_SEMVER}-${arch//\//-}" )
+done
+
+## 推送镜像
+for arch in "${BUILDX_ARCH[@]}"; do
+    for tag in ${ALL_MULTIARCH_TAG[@]}; do
+        docker push ${DOCKERHUB_REPOSITORY}:${tag}-${arch//\//-}
+    done
 done
 
 ## 增加manifest
@@ -46,7 +53,7 @@ for tag in ${ALL_MULTIARCH_TAG[@]}; do
     docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:${RELEASE_SEMVER}-arm64" --variant "v8"
 done
 
-## 推送manifest到docker hub
+## 推送manifest
 for tag in ${ALL_MULTIARCH_TAG[@]}; do
     docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"
 done

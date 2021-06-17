@@ -6,18 +6,19 @@
 - 故障时发送通知，可选途径同上；
 - 每4小时检查一下tracker状态，如发现种子的tracker状态有问题，将给该种子添加`TrackerError`的标签，方便筛选；
 - 日志输出到docker控制台，可从portainer查看；
-- `python`为可选项，设置为`true`才安装（详见环境变量清单）；
+- `python`为可选项，设置为`true`才安装（2021-06-17调整，详见环境变量清单）；
 - 体积很小；
 - 默认中文UI；
 - 默认东八区时区；
-- 多标签可用，其中`latest` `4` `4.x` `4.x.x`是多平台标签，可用平台：`amd64` `386` `arm/v6` `arm/v7` `arm64` `s390x` `ppc64le`，其他标签均为单平台标签。
+- 多标签可用，其中`latest` `4` `4.x` `4.x.x`是多平台标签，可用平台：`amd64` `386` `arm/v6` `arm/v7` `arm64` `s390x`，其他标签均为单平台标签。
 - ![钉钉通知效果图](https://github.com/nevinen/dockerfiles/blob/master/qbittorrent/notify.png)
 
 ## 更新日志
 
-| Date       | qBittorrent | Qt      | Libtorrent | Boost  | OpenSSL | zlib    |
-| :-:        | :-:         | :-:     | :-:        | :-:    | :-:     | :-:     |
-| 2021-06-08 | 4.3.5       | 5.15.2  | 1.2.13     | 1.72.0 | 1.1.1k  | 1.2.11  |
+| Date       | qBittorrent | Qt      | libtorrent | Boost  | OpenSSL | zlib    | alpine | 备注 |
+| :-:        | :-:         | :-:     | :-:        | :-:    | :-:     | :-:     | :-:    | -    |
+| 2021-06-08 | 4.3.5       | 5.15.2  | 1.2.13     | 1.72.0 | 1.1.1k  | 1.2.11  | 3.13   |      |
+| 2021-06-17 | 4.3.5       | 5.15.3  | 1.2.14     | 1.76.0 | 1.1.1k  | 1.2.11  | 3.14   | 默认不再安装python，需要开关打开才安装 |
 
 ## 创建
 

@@ -53,12 +53,12 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
        tzdata \
        jq \
        bash \
+       s6-overlay \
     && rm -rf /tmp/* /var/cache/apk/* \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && useradd qbittorrent -u ${PUID} -U -m -d ${QBITTORRENT_HOME} -s /bin/bash \
     && qbittorrent-nox --version
-COPY --from=nevinee/s6-overlay-stage / /
 COPY s6-overlay /
 WORKDIR /data
 VOLUME ["/data"]
