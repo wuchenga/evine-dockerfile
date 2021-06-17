@@ -10,7 +10,6 @@
 ## DOCKERFILE_NAME=""         ## 用来构建的Dockerfile文件名
 
 set -o pipefail
-set -x
 
 ## 版本、镜像名称等
 export QB_FULL_VERSION=4.3.5
