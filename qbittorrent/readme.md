@@ -43,7 +43,7 @@ armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](h
 
 **docker-compose**
 
-新建`docker-compose.yml`文件如下，创建好后以`docker-compose up -d`命令启动即可。
+新建`docker-compose.yml`文件如下（[点我查看arm设备如何安装docker-compose](https://www.jianshu.com/p/1beecfed17bc)），创建好后以`docker-compose up -d`命令启动即可。
 
 ```
 version: "2.0"
