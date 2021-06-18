@@ -2,7 +2,7 @@
 
 ## 运行脚本的前提：已经运行过 docker login 并已经成功登陆。
 ## 注意：本地编译仍然会花费好几个小时，并且极有可能中途报错，若中途报错，建议手动复制命令一条一条运行；也可另写脚本调用本脚本编译。
-## 在Dockerfile同目录下运行，请通过运行 run.sh 来调用本脚本
+## 在Dockerfile同目录下运行
 ## 需要先定义以下几个变量：
 ## QB_FULL_VERSION=           ## qbittorrent版本
 ## LIBTORRENT_FULL_VERSION=   ## libtorrent版本
