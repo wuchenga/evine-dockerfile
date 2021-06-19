@@ -2,7 +2,7 @@
 
 - 自动按`tracker`分类；
 - 下载完成发送通知，可选途径：钉钉, Telegram, ServerChan, 爱语飞飞；
-- 下载完成通知搭配RSS功能自动下载效果很好，RSS教程：https://www.jianshu.com/p/54e6137ea4e3；
+- 下载完成通知搭配RSS功能自动下载效果很好，RSS教程：https://www.jianshu.com/p/54e6137ea4e3 ；
 - 故障时发送通知，可选途径同上；
 - 每4小时检查一下tracker状态，如发现种子的tracker状态有问题，将给该种子添加`TrackerError`的标签，方便筛选；
 - 日志输出到docker控制台，可从portainer查看；
