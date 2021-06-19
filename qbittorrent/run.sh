@@ -20,8 +20,10 @@ export DOCKERFILE_NAME=Dockerfile
 ## 跨平台构建相关
 prepare_buildx() {
     export DOCKER_CLI_EXPERIMENTAL=enabled
-    docker pull multiarch/qemu-user-static
-    docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    # docker pull multiarch/qemu-user-static
+    docker pull tonistiigi/binfmt
+    # docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+    docker run --privileged --rm tonistiigi/binfmt --install all
     docker buildx create --name builder --use 2>/dev/null || docker buildx use builder
     SUPPORTED_PLATFORMS=$(docker buildx inspect --bootstrap | grep 'Platforms:*.*' | cut -d : -f2,3)
     echo "本主机支持以下平台：$SUPPORTED_PLATFORMS"
