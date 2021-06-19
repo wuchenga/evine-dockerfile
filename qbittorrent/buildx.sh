@@ -27,8 +27,8 @@ for arch in "${BUILDX_ARCH[@]}"; do
     done
     echo "------------------------- 构建目标平台：linux/${arch} -------------------------"
     docker buildx build $cmd_tag \
-        --cache-from "type=local,src=/tmp/.buildx-cache" \
-        --cache-to "type=local,dest=/tmp/.buildx-cache" \
+        --cache-from "type=local,src=~/.buildx-cache" \
+        --cache-to "type=local,dest=~/.buildx-cache" \
         --output "type=docker" \
         --platform linux/${arch} \
         --build-arg "QBITTORRENT_VERSION=${QB_FULL_VERSION}" \
