@@ -9,13 +9,12 @@ change_tag() {
     local trackers=$($cmd_curl "${api_url_base}/torrents/trackers?hash=${hash}")
     local trackers_url=( $(echo $trackers | jq -r .[].url | sed "s# #_#g" ) )
     local trackers_status=( $(echo $trackers | jq .[].status) )
-    local trackers_msg=( $(echo $trackers | jq .[].msg | sed "s# #_#g" ) )
 
     # 检查tracker消息
     local add_tag_mark=no
     local n
-    for ((n = 0; n < ${#trackers_url[*]}; n++)); do
-        if [[ ${trackers_url[n]} == *http* ]] && [[ -n $(echo ${trackers_msg[n]} | sed "s#\"##g") || ${trackers_status[n]} -eq 4 ]]; then
+    for ((n = $((${#trackers_url[*]} - 1)); n >= 0; n--)); do
+        if [[ ${trackers_url[n]} == *http* ]] && [[ ${trackers_status[n]} -eq 4 ]]; then
             add_tag_mark=yes
             break
         fi
