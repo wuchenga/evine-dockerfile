@@ -1,8 +1,8 @@
 #!/usr/bin/with-contenv bash
 
 fix_config() {
-    BT_PORT=${BT_PORT-:34567}
-    WEBUI_PORT=${WEBUI_PORT-:8080}
+    BT_PORT=${BT_PORT:-34567}
+    WEBUI_PORT=${WEBUI_PORT:-8080}
     if [ ! -s /data/config/qBittorrent.conf ]; then
         echo "Initializing qBittorrent configuration..."
         cat > /data/config/qBittorrent.conf << EOL
@@ -26,7 +26,7 @@ General\UseRandomPort=false
 Queueing\QueueingEnabled=false
 WebUI\Address=*
 WebUI\AlternativeUIEnabled=false
-WebUI\Enabled=false
+WebUI\Enabled=true
 WebUI\LocalHostAuth=false
 WebUI\Port=${WEBUI_PORT}
 EOL
@@ -36,7 +36,6 @@ EOL
     sed -i "{
         s!ported_to_new_savepath_system.*!ported_to_new_savepath_system=true!g;
         s!Connection\\\PortRangeMin=.*!Connection\\\PortRangeMin=${BT_PORT}!g;
-        s!Connection\\\UseUPnP=.*!Connection\\\UseUPnP=false!g;
         s!WebUI\\\Enabled=.*!WebUI\\\Enabled=true!g;
         s!WebUI\\\Port=.*!WebUI\\\Port=${WEBUI_PORT}!g;
         s!WebUI\\\LocalHostAuth=.*!WebUI\\\LocalHostAuth=false!g;
