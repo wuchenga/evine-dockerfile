@@ -39,4 +39,4 @@ run_buildx() {
 }
 
 ## 记录日志并增加时间戳
-run_buildx 2>&1 | ts "[%Y-%m-%d %H:%M:%.S]" | tee buildx.log
+run_buildx 2>&1 | ts "[%Y-%m-%d %H:%M:%.S]" | tee buildx_${QB_FULL_VERSION}.log
