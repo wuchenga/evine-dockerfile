@@ -213,7 +213,7 @@ curl -X POST -d 'json={"alternative_webui_enabled":false}' http://127.0.0.1:${WE
 
 - 方法1：部署qbittorrent容器时，直接指定标签，如`nevinee/qbittorrent:4.3.5`；
 
-- 方法2：在部署时在命令中添加一个label　`com.centurylinklabs.watchtower.enable=false`：
+- 方法2（推荐）：在部署时在命令中添加一个label：`com.centurylinklabs.watchtower.enable=false`：
 
 docker cli：
 ```
