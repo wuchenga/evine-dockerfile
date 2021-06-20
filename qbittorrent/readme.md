@@ -26,21 +26,23 @@
 
 | 序号 | 变量名              | 默认值        | 说明 |
 | :-: | :-:                | :-:           | -    |
-|  1  | PUID               | 1500          | 用户的uid，以该用户运行qbittorrent-nox。 |
-|  2  | PGID               | 1500          | 用户的gid，以该用户运行qbittorrent-nox。 |
-|  3  | TZ                 | Asia/Shanghai | 时区 |
-|  4  | INSTALL_PYTHON     | false         | 默认不安装python，如需要python，请设置为`true`，设置后将在首次启动容器时自动安装好。 |
-|  5  | UMASK_SET          | 000           | umask |
-|  6  | TG_USER_ID         |               | 通知渠道telegram，如需使用需要和 TG_BOT_TOKEN 同时赋值，私聊 @getuseridbot 获取。 |
-|  7  | TG_BOT_TOKEN       |               | 通知渠道telegram，如需使用需要和 TG_USER_ID 同时赋值，私聊 @BotFather 获取。 |
-|  8  | DD_BOT_TOKEN       |               | 通知渠道钉钉，如需使用需要和 DD_BOT_SECRET 同时赋值，机器人设置中webhook链接`access_token=`后面的字符串（不含`=`以及`=`之前的字符）。 |
-|  9  | DD_BOT_SECRET      |               | 通知渠道钉钉，如需使用需要和 DD_BOT_TOKEN 同时赋值，机器人设置中启用`加签`，加签的秘钥，形如：`SEC1234567890abcdefg`。 |
-|  10 | IYUU_TOKEN         |               | 通知渠道爱语飞飞，通过 http://iyuu.cn/ 获取。 |
-|  11 | SCKEY              |               | 通知渠道ServerChan，通过 http://sc.ftqq.com/3.version 获取。 |
-|  12 | CRON_HEALTH_CHECK  | 12 * * * *    | 宕机检查的cron，在设定的cron运行时如发现qbittorrent-nox宕机了，则向设置的通知渠道发送通知，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。 |
-|  13 | CRON_AUTO_CATEGORY | 32 */2 * * *  | 自动分类的cron，在设定的cron将所有种子按tracker分类，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
-|  14 | CRON_TRACKER_ERROR | 52 */4 * * *  | 检查tracker状态是否健康的cron，在设定的cron将检查所有种子的tracker状态，如果有问题就打上`TrackerError`的标签，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
-|  15 | DL_FINISH_NOTIFY   | true          | 默认会在下载完成时向设定的通知渠道发送种子下载完成的通知消息，如不想收此类通知，则输入`false` |
+|  1  | PUID               | 1500          | 用户的uid，输入命令`id -u`可以查到，以该用户运行qbittorrent-nox，群晖用户必须改。 |
+|  2  | PGID               | 1500          | 用户的gid，输入命令`id -g`可以查到，以该用户运行qbittorrent-nox，群晖用户必须改。 |
+|  3  | WEBUI_PORT         | 8080          | WebUI访问端口，建议自定义，如需公网访问，需要将qBittorrent和公网之间所有网关设备上都设置端口转发。 |
+|  4  | BT_PORT            | 34567         | BT监听端口，建议自定义，如需达到`可连接`状态，需要将qBittorrent和公网之间所有网关设备上都设置端口转发。 |
+|  5  | TZ                 | Asia/Shanghai | 时区，可填内容详见：https://meetingplanner.io/zh-cn/timezone/cities |
+|  6  | INSTALL_PYTHON     | false         | 默认不安装python，如需要python，请设置为`true`，设置后将在首次启动容器时自动安装好。 |
+|  7  | UMASK_SET          | 000           | 权限掩码`umask`，指定qBittorrent在建立文件时预设的权限掩码，可以设置为`022`。 |
+|  8  | TG_USER_ID         |               | 通知渠道telegram，如需使用需要和 TG_BOT_TOKEN 同时赋值，私聊 @getuseridbot 获取。 |
+|  9  | TG_BOT_TOKEN       |               | 通知渠道telegram，如需使用需要和 TG_USER_ID 同时赋值，私聊 @BotFather 获取。 |
+|  10 | DD_BOT_TOKEN       |               | 通知渠道钉钉，如需使用需要和 DD_BOT_SECRET 同时赋值，机器人设置中webhook链接`access_token=`后面的字符串（不含`=`以及`=`之前的字符）。 |
+|  11 | DD_BOT_SECRET      |               | 通知渠道钉钉，如需使用需要和 DD_BOT_TOKEN 同时赋值，机器人设置中启用`加签`，加签的秘钥，形如：`SEC1234567890abcdefg`。 |
+|  12 | IYUU_TOKEN         |               | 通知渠道爱语飞飞，通过 http://iyuu.cn/ 获取。 |
+|  13 | SCKEY              |               | 通知渠道ServerChan，通过 http://sc.ftqq.com/3.version 获取。 |
+|  14 | CRON_HEALTH_CHECK  | 12 * * * *    | 宕机检查的cron，在设定的cron运行时如发现qbittorrent-nox宕机了，则向设置的通知渠道发送通知，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。 |
+|  15 | CRON_AUTO_CATEGORY | 32 */2 * * *  | 自动分类的cron，在设定的cron将所有种子按tracker分类，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
+|  16 | CRON_TRACKER_ERROR | 52 */4 * * *  | 检查tracker状态是否健康的cron，在设定的cron将检查所有种子的tracker状态，如果有问题就打上`TrackerError`的标签，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
+|  17 | DL_FINISH_NOTIFY   | true          | 默认会在下载完成时向设定的通知渠道发送种子下载完成的通知消息，如不想收此类通知，则输入`false` |
 
 ## 创建
 
@@ -177,7 +179,7 @@ armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](h
 
 - 举例说明如何保证新容器中的下载文件的保存路径和旧容器一致，比如旧容器中下载了一个 `xxx.2020.BluRay.1080p.x264.DTS-XXX`，保存路径为`/movies`（宿主机上的真实路径为`/volume1/home/id/movies`），那么在新建新容器时，给新容器增加一个路径映射：`/volume1/home/id/movies:/movies`　即可。
 
-- 注意新容器和旧容器映射路径的权限保持一致。
+- 注意新容器的PUID/PGID和要旧容器保持一致。
 
 **遗忘登陆密码，如何重置**
 
