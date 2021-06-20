@@ -38,9 +38,7 @@ run_buildx() {
     echo "DOCKERFILE_NAME=${DOCKERFILE_NAME}"
     for ((i = 1; i <= 20; i++)); do
         echo "============================= 第 $i 次构建尝试 ============================="
-        ./buildx.sh
-        [[ $? -eq 0 ]] && break
-        let i++
+        ./buildx.sh && break
     done
 }
 
