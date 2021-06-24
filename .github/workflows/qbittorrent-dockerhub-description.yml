@@ -1,0 +1,21 @@
+name: 更新qb在hub上的描述页
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - qbittorrent/readme.md
+      - .github/workflows/qbittorrent-dockerhub-description.yml
+jobs:
+  dockerHubDescription:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Docker Hub Description
+      uses: peter-evans/dockerhub-description@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        repository: nevinee/qbittorrent
+        readme-filepath: ./qbittorrent/readme.md
