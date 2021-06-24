@@ -13,6 +13,8 @@
 
 set -o pipefail
 
+cd $(dirname $0)
+
 ## 版本、镜像名称等
 export QB_FULL_VERSION=${1:-4.3.5}
 export LIBTORRENT_FULL_VERSION=${2:-1.2.14}
