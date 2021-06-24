@@ -5,7 +5,7 @@
 set -e
 
 ## 要构建的平台
-BUILDX_ARCH=( amd64 arm/v7 arm64 arm/v6 386 s390x )
+BUILDX_ARCH=( s390x arm/v6 arm/v7 arm64 386 amd64 )
 
 ## qBittorrent的各种版本号
 RELEASE_SEMVER=${QB_FULL_VERSION}
