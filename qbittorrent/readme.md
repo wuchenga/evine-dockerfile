@@ -254,7 +254,7 @@ docker logs -f qbittorrent
 
 ## 说明
 
-- Dockerfile、构建脚本、以及构建日志请见：https://github.com/nevinen/dockerfiles/blob/master/qbittorrent
+- Dockerfile、s6脚本、构建脚本以及构建日志请见：https://github.com/nevinen/dockerfiles/blob/master/qbittorrent
 
 ## 参考
 
