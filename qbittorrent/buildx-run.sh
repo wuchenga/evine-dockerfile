@@ -5,11 +5,13 @@
 ## 3. 在Dockerfile同目录下运行；
 ## 4. 请使用root用户运行；
 ## 5. 宿主机安装好 moreutils 这个包；
-## 6. 需要先定义以下几个变量，可直接传参，依次为 $1 $2 $3 $4：
+## 6. 需要先定义以下几个变量，可直接传参，依次为 $1 $2 $3 $4 $5 $6：
 ##    QB_FULL_VERSION=           # qbittorrent版本
 ##    LIBTORRENT_FULL_VERSION=   # libtorrent版本
 ##    DOCKERHUB_REPOSITORY=      # 镜像名称
 ##    DOCKERFILE_NAME=           # 用来构建的Dockerfile文件名
+##    LIBTORRENT_URL=            # libtorrent git地址
+##    QBITTORRENT_URL=           # qBittorrent git地址
 
 set -o pipefail
 
@@ -20,6 +22,8 @@ export QB_FULL_VERSION=${1:-4.3.5}
 export LIBTORRENT_FULL_VERSION=${2:-1.2.14}
 export DOCKERHUB_REPOSITORY=${3:-nevinee/qbittorrent}
 export DOCKERFILE_NAME=${4:-Dockerfile}
+export LIBTORRENT_URL=${5:-https://gitee.com/evine/libtorrent.git}
+export QBITTORRENT_URL=${6:-https://gitee.com/evine/qBittorrent.git}
 
 ## 跨平台构建相关
 prepare_buildx() {
@@ -38,6 +42,8 @@ run_buildx() {
     echo "LIBTORRENT_FULL_VERSION=${LIBTORRENT_FULL_VERSION}"
     echo "DOCKERHUB_REPOSITORY=${DOCKERHUB_REPOSITORY}"
     echo "DOCKERFILE_NAME=${DOCKERFILE_NAME}"
+    echo "LIBTORRENT_URL=${LIBTORRENT_URL}"
+    echo "QBITTORRENT_URL=${QBITTORRENT_URL}"
     for ((i = 1; i <= 20; i++)); do
         echo "============================= 第 $i 次构建尝试 ============================="
         ./buildx.sh && break

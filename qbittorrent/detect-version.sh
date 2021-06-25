@@ -23,7 +23,7 @@ if [[ $ver_qb_official ]] && [[ $ver_lib_official ]]; then
         . $dir_myscripts/my_config.sh
         notify "qBittorrent已经升级" "当前官方版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n当前本地版本信息如下：\nqBittorrent: ${ver_qb_local}\nlibtorrent: ${ver_lib_local}\n\n已自动开始重新构建并推送镜像..."
         start_time=$(date +'%Y-%m-%d %H:%M:%S')
-        ./buildx-run.sh "$ver_qb_official" "$ver_lib_official" && {
+        ./buildx-run.sh "$ver_qb_official" "$ver_lib_official" "nevinee/qbittorrent" "Dockerfile" "https://github.com/arvidn/libtorrent.git" "https://github.com/qbittorrent/qBittorrent.git" && {
             echo "$ver_qb_official" > ./ver_qbittorrent
             echo "$ver_lib_official" > ./ver_libtorrent
             notify "qBittorrent镜像构建成功" "当前版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n构建时间如下：\n开始时间：${start_time}\n完成时间：$(date +'%Y-%m-%d %H:%M:%S')\n\nhub链接如下：\nhttps://hub.docker.com/repository/docker/nevinee/qbittorrent\nhttps://hub.docker.com/r/nevinee/qbittorrent"

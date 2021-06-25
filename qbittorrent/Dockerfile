@@ -14,8 +14,9 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
        qt5-qttools-dev \
     && rm -rf /tmp/* /var/cache/apk/*
 ARG LIBTORRENT_VERSION
+ARG LIBTORRENT_URL="https://gitee.com/evine/libtorrent.git"
 RUN cd /tmp \
-    && git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules https://gitee.com/evine/libtorrent.git \
+    && git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules ${LIBTORRENT_URL} \
     && cd libtorrent \
     && ./autotool.sh \
     && ./configure CXXFLAGS="-std=c++14" --with-libiconv \
@@ -23,8 +24,9 @@ RUN cd /tmp \
     && make install-strip \
     && ls -al /usr/local/lib/
 ARG QBITTORRENT_VERSION
+ARG QBITTORRENT_URL="https://gitee.com/evine/qBittorrent.git"
 RUN cd /tmp \
-    && git clone --branch release-${QBITTORRENT_VERSION} https://gitee.com/evine/qBittorrent.git \
+    && git clone --branch release-${QBITTORRENT_VERSION} ${QBITTORRENT_URL} \
     && cd qBittorrent \
     && ./configure --disable-gui \
     && make -j$(nproc) \
