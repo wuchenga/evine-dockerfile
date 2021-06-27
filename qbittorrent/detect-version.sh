@@ -8,7 +8,7 @@ dir_myscripts=$(cd $(dirname $0); cd ../../myscripts; pwd)
 cd $dir_shell
 
 ## 官方版本
-ver_qb_official=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[0]."name" | sed "s/release-//")
+ver_qb_official=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -vE "beta|rc" | head -1 | sed "s/release-//")
 ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m 1 "v1." | sed "s/v//")
 
 ## 本地版本
