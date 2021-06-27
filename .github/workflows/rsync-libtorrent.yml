@@ -17,4 +17,4 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
         with:
           source-repo: "git@github.com:arvidn/libtorrent.git"
-          destination-repo: "git@gitee.com:evine/qBittorrent.git"
+          destination-repo: "git@gitee.com:evine/libtorrent.git"
