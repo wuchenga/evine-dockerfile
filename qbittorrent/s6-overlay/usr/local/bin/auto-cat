@@ -26,6 +26,7 @@ category_all() {
 
     for hash in "${hashes[@]}"; do
         category_one "$hash"
+        sleep 1
     done
 }
 
