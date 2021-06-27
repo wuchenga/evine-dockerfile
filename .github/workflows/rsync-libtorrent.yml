@@ -5,7 +5,7 @@ on:
     - cron:  '16 6,18 * * *'
   workflow_dispatch:
   repository_dispatch:
-    types: mirror-libtorrent
+    types: mirror
 
 concurrency:
   group: git-mirror
