@@ -8,10 +8,10 @@
 ## 6. 需要先定义以下几个变量，可直接传参，依次为 $1 $2 $3 $4 $5 $6：
 ##    QB_FULL_VERSION=           # qbittorrent版本
 ##    LIBTORRENT_FULL_VERSION=   # libtorrent版本
-##    DOCKERHUB_REPOSITORY=      # 镜像名称
-##    DOCKERFILE_NAME=           # 用来构建的Dockerfile文件名
-##    LIBTORRENT_URL=            # libtorrent git地址
-##    QBITTORRENT_URL=           # qBittorrent git地址
+##    DOCKERHUB_REPOSITORY=      # 镜像名称，不输入则默认为nevinee/qbittorrent
+##    DOCKERFILE_NAME=           # 用来构建的Dockerfile文件名，不输入则默认为Dockerfile
+##    LIBTORRENT_URL=            # libtorrent git地址，不输入则默认为https://gitee.com/evine/libtorrent.git
+##    QBITTORRENT_URL=           # qBittorrent git地址，不输入则默认为https://gitee.com/evine/qBittorrent.git
 
 set -o pipefail
 
