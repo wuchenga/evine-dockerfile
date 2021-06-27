@@ -3,6 +3,7 @@ name: 同步qBittorrent仓库到Gitee
 on:
   schedule:
     - cron:  '23 1-23/2 * * *'
+  workflow_dispatch:
 
 concurrency:
   group: git-mirror
