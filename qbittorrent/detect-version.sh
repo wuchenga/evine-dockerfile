@@ -31,14 +31,14 @@ if [[ $ver_qb_official ]] && [[ $ver_lib_official ]]; then
             -H "Authorization: token ${GITHUB_MIRROR_TOKEN}" \
             -d '{"event_type":"mirror"}' \
             https://api.github.com/repos/nevinen/dockerfiles/dispatches
-        notify "qBittorrent已经升级" "当前官方版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n当前本地版本信息如下：\nqBittorrent: ${ver_qb_local}\nlibtorrent: ${ver_lib_local}\n\n已自动开始重新构建并推送镜像..."
-        sleep 3m
-        start_time=$(date +'%Y-%m-%d %H:%M:%S')
-        ./buildx-run.sh "$ver_qb_official" "$ver_lib_official" && {
-            echo "$ver_qb_official" > ./qbittorrent.version
-            echo "$ver_lib_official" > ./libtorrent.version
-            notify "qBittorrent镜像构建成功" "当前版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n构建时间如下：\n开始时间：${start_time}\n完成时间：$(date +'%Y-%m-%d %H:%M:%S')\n\nhub链接如下：\nhttps://hub.docker.com/repository/docker/nevinee/qbittorrent\nhttps://hub.docker.com/r/nevinee/qbittorrent"
-        } || notify "qBittorrent镜像构建失败" "当前官方版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n当前本地版本信息如下：\nqBittorrent: ${ver_qb_local}\nlibtorrent: ${ver_lib_local}\n\n构建时间如下：\n开始时间：${start_time}\n完成时间：$(date +'%Y-%m-%d %H:%M:%S')"
+        notify "qBittorrent已经升级" "当前官方版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n当前本地版本信息如下：\nqBittorrent: ${ver_qb_local}\nlibtorrent: ${ver_lib_local}"
+        # sleep 3m
+        # start_time=$(date +'%Y-%m-%d %H:%M:%S')
+        # ./buildx-run.sh "$ver_qb_official" "$ver_lib_official" && {
+        #     echo "$ver_qb_official" > ./qbittorrent.version
+        #     echo "$ver_lib_official" > ./libtorrent.version
+        #     notify "qBittorrent镜像构建成功" "当前版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n构建时间如下：\n开始时间：${start_time}\n完成时间：$(date +'%Y-%m-%d %H:%M:%S')\n\nhub链接如下：\nhttps://hub.docker.com/repository/docker/nevinee/qbittorrent\nhttps://hub.docker.com/r/nevinee/qbittorrent"
+        # } || notify "qBittorrent镜像构建失败" "当前官方版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n当前本地版本信息如下：\nqBittorrent: ${ver_qb_local}\nlibtorrent: ${ver_lib_local}\n\n构建时间如下：\n开始时间：${start_time}\n完成时间：$(date +'%Y-%m-%d %H:%M:%S')"
     else
         echo "qBittorrent官方版本和本地一致，均为：$ver_qb_official"
     fi
