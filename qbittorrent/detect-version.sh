@@ -9,7 +9,11 @@ cd $dir_shell
 
 ## 官方版本
 ver_qb_official=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -vE "beta|rc" | head -1 | sed "s/release-//")
-ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m 1 "v1." | sed "s/v//")
+if [[ $ver_qb_official == 4.3* ]]; then
+    ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -vi "rc" | grep -m 1 "v1." | sed "s/v//")
+else
+    ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -vi "rc" | grep -m 1 "v2." | sed "s/v//")
+fi
 
 ## 本地版本
 ver_qb_local=$(cat ./qbittorrent.version)
@@ -27,8 +31,8 @@ if [[ $ver_qb_official ]] && [[ $ver_lib_official ]]; then
             -H "Authorization: token ${GITHUB_MIRROR_TOKEN}" \
             -d '{"event_type":"mirror"}' \
             https://api.github.com/repos/nevinen/dockerfiles/dispatches
-        sleep 2m
         notify "qBittorrent已经升级" "当前官方版本信息如下：\nqBittorrent: ${ver_qb_official}\nlibtorrent: ${ver_lib_official}\n\n当前本地版本信息如下：\nqBittorrent: ${ver_qb_local}\nlibtorrent: ${ver_lib_local}\n\n已自动开始重新构建并推送镜像..."
+        sleep 3m
         start_time=$(date +'%Y-%m-%d %H:%M:%S')
         ./buildx-run.sh "$ver_qb_official" "$ver_lib_official" && {
             echo "$ver_qb_official" > ./qbittorrent.version
