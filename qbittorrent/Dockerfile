@@ -8,26 +8,14 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
        boost-dev \
        build-base \
        cppunit-dev \
-       git \
        libtool \
        ncurses-dev \
        qt5-qttools-dev \
     && rm -rf /tmp/* /var/cache/apk/*
-ARG LIBTORRENT_VERSION
-ARG LIBTORRENT_URL="https://gitee.com/evine/libtorrent.git"
-RUN cd /tmp \
-    && git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules ${LIBTORRENT_URL} \
-    && cd libtorrent \
-    && ./autotool.sh \
-    && ./configure CXXFLAGS="-std=c++14" --with-libiconv \
-    && make -j$(nproc) \
-    && make install-strip \
-    && ls -al /usr/local/lib/
 ARG QBITTORRENT_VERSION
-ARG QBITTORRENT_URL="https://gitee.com/evine/qBittorrent.git"
-RUN cd /tmp \
-    && git clone --branch release-${QBITTORRENT_VERSION} ${QBITTORRENT_URL} \
-    && cd qBittorrent \
+COPY qBittorrent-${QBITTORRENT_VERSION} /tmp/qBittorrent
+RUN cd /tmp/qBittorrent \
+    && ls -al \
     && ./configure --disable-gui \
     && make -j$(nproc) \
     && make install \
@@ -35,7 +23,8 @@ RUN cd /tmp \
     && qbittorrent-nox --help
 
 FROM alpine
-COPY --from=builder /usr/local/lib/libtorrent-rasterbar.so.10.0.0 /usr/lib/libtorrent-rasterbar.so.10
+ARG LIBTORRENT_VERSION
+COPY --from=nevinee/libtorrent-rasterbar:${LIBTORRENT_VERSION} /usr/lib/libtorrent-rasterbar.so.10 /usr/lib/libtorrent-rasterbar.so.10
 COPY --from=builder /usr/local/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
 ENV QBITTORRENT_HOME="/home/qbittorrent" \
     TZ="Asia/Shanghai" \

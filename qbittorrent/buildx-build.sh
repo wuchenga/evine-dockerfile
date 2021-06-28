@@ -18,10 +18,8 @@ for arch in ${BUILDX_ARCH}; do
         --cache-to "type=local,dest=/root/.buildx-cache" \
         --output "type=docker" \
         --platform linux/${arch} \
-        --build-arg "LIBTORRENT_VERSION=${LIBTORRENT_FULL_VERSION}" \
-        --build-arg "LIBTORRENT_URL=${LIBTORRENT_URL}" \
-        --build-arg "QBITTORRENT_VERSION=${QB_FULL_VERSION}" \
-        --build-arg "QBITTORRENT_URL=${QBITTORRENT_URL}" \
+        --build-arg "QBITTORRENT_VERSION=${QBITTORRENT_VERSION}" \
+        --build-arg "LIBTORRENT_VERSION=${LIBTORRENT_VERSION}" \
         --file ${DOCKERFILE_NAME} \
         .
 done
