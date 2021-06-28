@@ -18,7 +18,7 @@ RUN cd /tmp/libtorrent \
     && ls -al \
     && ./autotool.sh \
     && ./configure CXXFLAGS="-std=c++17" --with-libiconv \
-    && make -j$(nproc) \
+    && make -j1 \
     && make install-strip \
     && ls -al /usr/local/lib/
 
