@@ -18,12 +18,28 @@ set -o pipefail
 cd $(dirname $0)
 
 ## 版本、镜像名称等
-export QB_FULL_VERSION=${1:-4.3.5}
+export QB_FULL_VERSION=${1:-4.3.6}
 export LIBTORRENT_FULL_VERSION=${2:-1.2.14}
 export DOCKERHUB_REPOSITORY=${3:-nevinee/qbittorrent}
 export DOCKERFILE_NAME=${4:-Dockerfile}
 export LIBTORRENT_URL=${5:-https://gitee.com/evine/libtorrent.git}
 export QBITTORRENT_URL=${6:-https://gitee.com/evine/qBittorrent.git}
+
+## 要构建的平台
+export BUILDX_ARCH="s390x arm/v6 arm/v7 arm64 386 amd64"
+
+## qBittorrent的各种版本号
+RELEASE_SEMVER=${QB_FULL_VERSION}
+PATCH_SEMVER=$(printf "${RELEASE_SEMVER}" | cut -d '.' -f 1-3)
+MINOR_SEMVER=$(printf "${RELEASE_SEMVER}" | cut -d '.' -f 1-2)
+MAJOR_SEMVER=$(printf "${RELEASE_SEMVER}" | cut -d '.' -f 1)
+
+## 多平台标签
+if [[ $RELEASE_SEMVER == $PATCH_SEMVER ]]; then
+    export ALL_MULTIARCH_TAG="${MAJOR_SEMVER} ${MINOR_SEMVER} ${RELEASE_SEMVER} latest"
+else
+    export ALL_MULTIARCH_TAG="${MAJOR_SEMVER} ${MINOR_SEMVER} ${PATCH_SEMVER} ${RELEASE_SEMVER} latest"
+fi
 
 ## 跨平台构建相关
 prepare_buildx() {
@@ -34,7 +50,7 @@ prepare_buildx() {
     docker buildx inspect --bootstrap
 }
 
-## 以子shell调用buildx.sh，在子shell中设置 `set -e`，出错立即退出并重新运行
+## 以子shell调用buildx-build.sh，在子shell中设置 `set -e`，出错立即退出并重新运行
 run_buildx() {
     prepare_buildx
     echo "控制变量如下："
@@ -46,9 +62,10 @@ run_buildx() {
     echo "QBITTORRENT_URL=${QBITTORRENT_URL}"
     for ((i = 1; i <= 20; i++)); do
         echo "============================= 第 $i 次构建尝试 ============================="
-        ./buildx.sh && break
+        ./buildx-build.sh && break
     done
+    [[ -z $i || $i -lt 20 ]] && ./buildx-manifest.sh
 }
 
 ## 记录日志并增加时间戳
-run_buildx 2>&1 | ts "[%Y-%m-%d %H:%M:%.S]" | tee buildx_${QB_FULL_VERSION}.log
+run_buildx 2>&1 | ts "[%Y-%m-%d %H:%M:%.S]" | tee -a logs/${QB_FULL_VERSION}.log
