@@ -63,6 +63,11 @@ buildx_build() {
     done
 }
 
+## 推送
+buildx_manifest() {
+    [[ -z $i || $i -lt 20 ]] && ./buildx-manifest.sh
+}
+
 ## 以子shell调用buildx-build.sh，在子shell中设置 `set -e`，出错立即退出并重新运行
 run_buildx() {
     echo "控制变量如下："
@@ -70,12 +75,11 @@ run_buildx() {
     echo "LIBTORRENT_VERSION=${LIBTORRENT_VERSION}"
     echo "DOCKERHUB_REPOSITORY=${DOCKERHUB_REPOSITORY}"
     echo "DOCKERFILE_NAME=${DOCKERFILE_NAME}"
-    echo "LIBTORRENT_URL=${LIBTORRENT_URL}"
     echo "QBITTORRENT_URL=${QBITTORRENT_URL}"
     prepare_buildx
     git_clone
     buildx_build
-    [[ -z $i || $i -lt 20 ]] && ./buildx-manifest.sh
+    buildx_manifest
 }
 
 ## 记录日志并增加时间戳
