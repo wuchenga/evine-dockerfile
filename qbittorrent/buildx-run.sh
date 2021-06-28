@@ -21,7 +21,7 @@ export QBITTORRENT_VERSION=${1:-4.3.6}
 export LIBTORRENT_VERSION=${2:-1.2.14}
 export DOCKERHUB_REPOSITORY=${3:-nevinee/qbittorrent}
 export DOCKERFILE_NAME=${4:-Dockerfile}
-export QBITTORRENT_URL=${6:-https://gitee.com/evine/qBittorrent.git}
+export QBITTORRENT_URL=${5:-https://gitee.com/evine/qBittorrent.git}
 
 ## 要构建的平台
 export BUILDX_ARCH="s390x ppc64le arm/v6 arm/v7 arm64 386 amd64"

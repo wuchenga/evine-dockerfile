@@ -4,8 +4,6 @@
 
 set -e
 
-echo ${BUILDX_ARCH}
-echo ${ALL_MULTIARCH_TAG}
 ## 构建镜像
 for arch in ${BUILDX_ARCH}; do
     cmd_tag=""
