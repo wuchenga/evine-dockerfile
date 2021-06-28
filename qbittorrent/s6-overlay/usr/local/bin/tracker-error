@@ -16,6 +16,7 @@ change_tag() {
     for ((n = $((${#trackers_url[*]} - 1)); n >= 0; n--)); do
         if [[ ${trackers_url[n]} == *http* ]] && [[ ${trackers_status[n]} -eq 4 ]]; then
             add_tag_mark=yes
+            let tracker_error_count++
             break
         fi
     done
@@ -35,9 +36,17 @@ change_tag() {
 }
 
 ## 处理所有torrent
-. /usr/local/bin/share
-hashes=( $($cmd_curl ${api_url_base}/torrents/info | jq -r .[].hash) )
-for hash in "${hashes[@]}"; do
-    change_tag "$hash"
-    sleep 1
-done
+main() {
+    . /usr/local/bin/share
+    hashes=( $($cmd_curl ${api_url_base}/torrents/info | jq -r .[].hash) )
+    tracker_error_count=0
+    for hash in "${hashes[@]}"; do
+        change_tag "$hash"
+        sleep 1
+    done
+    if [[ $tracker_error_count -gt 0 && $tracker_error_count -ge $TRACKER_ERROR_COUNT_MIN ]]; then
+        notify "${HOSTNAME}:tracker出错通知" "主机：${HOSTNAME}\n时间：$(date +'%Y-%m-%d %H:%M:%S')\n注意：当前有${tracker_error_count}个种子tracker出错，建议检查一下\n说明：您收到本通知是因为您设置了通知阈值TRACKER_ERROR_COUNT_MIN=${TRACKER_ERROR_COUNT_MIN}"
+    fi
+}
+
+main "$@"
