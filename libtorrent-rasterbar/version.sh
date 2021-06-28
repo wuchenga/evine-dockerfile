@@ -28,5 +28,7 @@ if [[ $ver_lib1_official ]] && [[ $ver_lib2_official ]]; then
             -d '{"event_type":"mirror"}' \
             https://api.github.com/repos/nevinen/dockerfiles/dispatches
         notify "libtorrent已经升级" "当前官方版本信息如下：\nlibtorrent 1.x: ${ver_lib1_official}\nlibtorrent 2.x: ${ver_lib2_official}\n\m当前本地版本信息如下：\nlibtorrent 1.x: ${ver_lib1_local}\nlibtorrent 2.x: ${ver_lib2_local}"
+    else
+        echo -e "libtorrent版本无变化：\nlibtorrent 1.x: ${ver_lib1_official}\nlibtorrent 2.x: ${ver_lib2_official}"
     fi
 fi
