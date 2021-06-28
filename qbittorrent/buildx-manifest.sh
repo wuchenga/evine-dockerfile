@@ -15,16 +15,11 @@ for arch in ${BUILDX_ARCH}; do
     done
 done
 
-## 添加多平台标签
+## 添加多平台标签并推送
 for tag in ${ALL_MULTIARCH_TAG}; do
     docker manifest create "${DOCKERHUB_REPOSITORY}:${tag}" "${IMAGES[@]}"
-    docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:${RELEASE_SEMVER}-arm-v6" --variant "v6"
-    docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:${RELEASE_SEMVER}-arm-v7" --variant "v7"
-    docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:${RELEASE_SEMVER}-arm64" --variant "v8"
-done
-
-## 推送多平台标签
-for tag in ${ALL_MULTIARCH_TAG}; do
+    docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:latest-arm-v6" --variant "v6"
+    docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:latest-arm-v7" --variant "v7"
+    docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:latest-arm64" --variant "v8"
     docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"
 done
-
