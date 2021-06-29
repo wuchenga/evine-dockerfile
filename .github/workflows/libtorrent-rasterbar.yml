@@ -11,7 +11,7 @@ jobs:
       DOCKER_CLI_EXPERIMENTAL: enabled
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       IMAGE_NAME: libtorrent-rasterbar
-      DOCKERFILE_NAME: Dockerfile2
+      DOCKERFILE_NAME: Dockerfile2.1
       DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/libtorrent-rasterbar
       BUILDX_ARCH: linux/amd64
     steps:
@@ -39,7 +39,6 @@ jobs:
         run: |
           LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -vi "rc" | grep -m 1 "v2." | sed "s/v//")
           cd ${IMAGE_NAME}
-          git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules ${LIBTORRENT_URL} libtorrent-${LIBTORRENT_VERSION}
           docker buildx build \
             --progress "plain" \
             --no-cache \
