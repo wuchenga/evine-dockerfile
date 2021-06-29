@@ -8,11 +8,11 @@ dir_myscripts=$(cd $(dirname $0); cd ../../myscripts; pwd)
 cd $dir_shell
 
 ## 官方版本
-ver_qb_official=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -viE "beta|rc" | head -1 | sed "s/release-//")
+ver_qb_official=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -m1 -E "release-([0-9]\.?){3,4}$" | sed "s/release-//")
 if [[ $ver_qb_official == 4.3* ]]; then
-    ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -viE "beta|rc" | grep -m 1 "v1." | sed "s/v//")
+    ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v1\.([0-9]\.?){2,3}$" | sed "s/v//")
 else
-    ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -viE "beta|rc" | grep -m 1 "v2." | sed "s/v//")
+    ver_lib_official=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v2\.([0-9]\.?){2,3}$" | sed "s/v//")
 fi
 
 ## 本地版本

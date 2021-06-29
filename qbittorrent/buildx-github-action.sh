@@ -3,11 +3,11 @@
 set -o pipefail
 
 ## 获取qBittorrent和libtorrent的版本号
-QBITTORRENT_VERSION=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -viE "beta|rc" | head -1 | sed "s/release-//")
+QBITTORRENT_VERSION=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -m1 -E "release-([0-9]\.?){3,4}$" | sed "s/release-//")
 if [[ ${QBITTORRENT_VERSION} == 4.3* ]]; then
-    LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -viE "rc|beta" | grep -m 1 "v1." | sed "s/v//")
+    LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v1\.([0-9]\.?){2,3}$" | sed "s/v//")
 else
-    LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -viE "rc|beta" | grep -m 1 "v2." | sed "s/v//")
+    LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v2\.([0-9]\.?){2,3}$" | sed "s/v//")
 fi
 
 ## qBittorrent的各种版本号
