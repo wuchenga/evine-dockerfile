@@ -1,16 +1,18 @@
+## Github Action构建使用
+
 FROM alpine AS builder
 ARG LIBTORRENT_VERSION
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && apk add --update --no-cache \
+RUN apk add --update --no-cache \
        boost-dev \
        build-base \
        openssl-dev \
        cmake \
        ninja \
+       git \
     && rm -rf /tmp/* /var/cache/apk/*
-COPY libtorrent-${LIBTORRENT_VERSION} /tmp/libtorrent
-RUN cd /tmp/libtorrent \
-    && ls -al \
+RUN cd /tmp \
+    && git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules https://github.com/arvidn/libtorrent \
+    && cd libtorrent \
     && cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_CXX_STANDARD=17 \
