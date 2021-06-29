@@ -39,6 +39,7 @@ jobs:
         run: |
           LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -vi "rc" | grep -m 1 "v2." | sed "s/v//")
           cd ${IMAGE_NAME}
+          git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules ${LIBTORRENT_URL} libtorrent-${LIBTORRENT_VERSION}
           docker buildx build \
             --progress "plain" \
             --no-cache \
