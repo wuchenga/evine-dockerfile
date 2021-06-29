@@ -9,7 +9,7 @@ RUN apk add --update --no-cache \
        git \
     && rm -rf /tmp/* /var/cache/apk/*
 RUN cd /tmp \
-    && git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules ${LIBTORRENT_URL} \
+    && git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules https://github.com/arvidn/libtorrent \
     && cd libtorrent \
     && cmake \
         -DCMAKE_BUILD_TYPE=Release \
