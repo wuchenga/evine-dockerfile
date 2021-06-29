@@ -38,6 +38,7 @@ jobs:
         name: 构建并推送到Dockerhub
         run: |
           LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -vi "rc" | grep -m 1 "v2." | sed "s/v//")
+          cd ${IMAGE_NAME}
           docker buildx build \
             --progress "plain" \
             --no-cache \
@@ -46,4 +47,4 @@ jobs:
             --build-arg "LIBTORRENT_VERSION=${LIBTORRENT_VERSION}" \
             --tag "${DOCKERHUB_REPOSITORY}:${LIBTORRENT_VERSION}" \
             --file ${DOCKERFILE_NAME} \
-            ${IMAGE_NAME}
+            .
