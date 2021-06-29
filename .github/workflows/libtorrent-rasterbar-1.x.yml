@@ -11,7 +11,7 @@ jobs:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       CONTEXT: libtorrent-rasterbar
       DOCKERFILE_NAME: Dockerfile.GithubAction
-      DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/${CONTEXT}
+      DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/libtorrent-rasterbar
       BUILDX_ARCH: linux/amd64,linux/arm64,linux/arm/v7
     steps:
       - 
