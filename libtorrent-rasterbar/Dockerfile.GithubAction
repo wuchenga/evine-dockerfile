@@ -19,7 +19,7 @@ RUN cd /tmp \
         -B release \
         -G Ninja \
     && cd release \
-    && ninja \
+    && ninja -j $(nproc) \
     && ls -al \
     && mkdir /out \
     && cp -d libtorrent-rasterbar.so* /out
