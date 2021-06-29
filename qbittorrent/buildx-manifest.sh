@@ -20,6 +20,5 @@ for tag in ${ALL_MULTIARCH_TAG}; do
     docker manifest create "${DOCKERHUB_REPOSITORY}:${tag}" "${IMAGES[@]}"
     docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:latest-arm-v6" --variant "v6"
     docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:latest-arm-v7" --variant "v7"
-    docker manifest annotate "${DOCKERHUB_REPOSITORY}:${tag}" "${DOCKERHUB_REPOSITORY}:latest-arm64" --variant "v8"
     docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"
 done
