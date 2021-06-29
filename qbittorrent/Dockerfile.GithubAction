@@ -2,8 +2,7 @@
 ## Github Action构建使用
 
 FROM alpine AS builder
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-    && apk add --update --no-cache \
+RUN apk add --update --no-cache \
        autoconf \
        automake \
        boost-dev \
