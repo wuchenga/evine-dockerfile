@@ -27,7 +27,7 @@ export QBITTORRENT_URL=${5:-https://gitee.com/evine/qBittorrent.git}
 export BUILDX_ARCH="s390x ppc64le arm/v6 arm/v7 arm64 386 amd64"
 
 ## qBittorrent的各种版本号
-RELEASE_SEMVER=${QB_FULL_VERSION}
+RELEASE_SEMVER=${QBITTORRENT_VERSION}
 PATCH_SEMVER=$(printf "${RELEASE_SEMVER}" | cut -d '.' -f 1-3)
 MINOR_SEMVER=$(printf "${RELEASE_SEMVER}" | cut -d '.' -f 1-2)
 MAJOR_SEMVER=$(printf "${RELEASE_SEMVER}" | cut -d '.' -f 1)
