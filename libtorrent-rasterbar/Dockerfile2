@@ -14,7 +14,9 @@ RUN cd /tmp/libtorrent \
     && cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_CXX_STANDARD=17 \
+        -B release \
         -G Ninja \
+    && cd release \
     && ninja \
     && ls -al \
     && mkdir /out \

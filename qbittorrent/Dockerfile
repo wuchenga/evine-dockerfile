@@ -7,9 +7,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
        automake \
        boost-dev \
        build-base \
-       cppunit-dev \
        libtool \
-       ncurses-dev \
        qt5-qttools-dev \
     && rm -rf /tmp/* /var/cache/apk/*
 ARG QBITTORRENT_VERSION
