@@ -20,10 +20,9 @@ RUN cd /tmp \
         -G Ninja \
     && cd release \
     && ninja -j $(nproc) \
-    && ls -al \
-    && mkdir /out \
-    && cp -d libtorrent-rasterbar.so* /out
+    && ninja install \
+    && ls -al /usr/local/bin
 
 FROM scratch
-COPY --from=builder /out /usr/lib
+COPY --from=builder /usr/local/lib /usr/lib
 
