@@ -16,9 +16,7 @@ jobs:
       full_version: ${{ steps.prepare.outputs.full_version }}
       multitags: ${{ steps.prepare.outputs.multitags }}
       image_name: ${{ env.IMAGE_NAME }}
-      dockerfile_name: ${{ env.DOCKERFILE_NAME }}
     env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       IMAGE_NAME: qbittorrent
       DOCKERFILE_NAME: Dockerfile.GithubAction
     steps:
@@ -38,7 +36,7 @@ jobs:
             perl -i -pe "s|LIBTORRENT_MAJOR_VERSION|2|" ${IMAGE_NAME}/${DOCKERFILE_NAME}; \
           fi
 
-          DOCKERHUB_REPOSITORY="${DOCKER_USERNAME}/${IMAGE_NAME}"
+          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}"
 
           PATCH_VERSION=$(printf "${FULL_VERSION}" | cut -d '.' -f 1-3)
           MINOR_VERSION=$(printf "${FULL_VERSION}" | cut -d '.' -f 1-2)
@@ -114,7 +112,7 @@ jobs:
       - 
         name: Create And Push Manifest
         run: |
-          DOCKERHUB_REPOSITORY="${DOCKER_USERNAME}/${{ needs.build.outputs.image_name }}"
+          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
           ALL_ARCH=(386 amd64 arm64 arm-v7 arm-v6 ppc64le s390x)
           MULTITAGS="${{ needs.build.outputs.multitags }}"
           
