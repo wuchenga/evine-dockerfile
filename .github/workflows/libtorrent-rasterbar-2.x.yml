@@ -56,5 +56,6 @@ jobs:
             --platform "${BUILDX_ARCH}" \
             --build-arg "LIBTORRENT_VERSION=${LIBTORRENT_VERSION}" \
             --tag "${DOCKERHUB_REPOSITORY}:${LIBTORRENT_VERSION}" \
+            --tag "${DOCKERHUB_REPOSITORY}:2" \
             --file ${DOCKERFILE_NAME} \
             .
