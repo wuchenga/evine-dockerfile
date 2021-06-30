@@ -14,7 +14,7 @@ jobs:
       max-parallel: 7
     outputs:
       full_version: ${{ steps.prepare.outputs.full_version }}
-      major_version: ${{ steps.prepare.outputs.major_version }}
+      major_version: ${{ env.MAJOR_VERSION }}
       image_name: ${{ env.IMAGE_NAME }}
     env:
       IMAGE_NAME: libtorrent-rasterbar
@@ -33,7 +33,6 @@ jobs:
           ARCH=${{ matrix.architecture }}
           TAGS="${DOCKERHUB_REPOSITORY}:${FULL_VERSION}-$(echo ${ARCH} | perl -pe '{s|linux/||g; s|/|-|g}')"
           echo ::set-output name=full_version::${FULL_VERSION}
-          echo ::set-output name=major_version::${MAJOR_VERSION}
           echo ::set-output name=build_args::LIBTORRENT_VERSION=${FULL_VERSION}
           echo ::set-output name=tags::${TAGS}
 
