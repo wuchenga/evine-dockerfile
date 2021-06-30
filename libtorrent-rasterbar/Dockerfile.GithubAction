@@ -2,7 +2,7 @@
 
 FROM alpine
 ARG LIBTORRENT_VERSION
-RUN apk updste \
+RUN apk update \
     && apk add --no-cache \
        libstdc++ \
     && apk add --no-cache --virtual .build \
