@@ -19,7 +19,7 @@ jobs:
       dockerfile_name: ${{ steps.prepare.outputs.dockerfile_name }}
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      IMAGE_NAME: qbtest
+      IMAGE_NAME: qbittorrent
       DOCKERFILE_NAME: Dockerfile.GithubAction
     steps:
       - 

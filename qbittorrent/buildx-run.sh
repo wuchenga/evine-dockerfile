@@ -77,6 +77,7 @@ run_buildx() {
     echo "DOCKERHUB_REPOSITORY=${DOCKERHUB_REPOSITORY}"
     echo "DOCKERFILE_NAME=${DOCKERFILE_NAME}"
     echo "QBITTORRENT_URL=${QBITTORRENT_URL}"
+    [[ ! -d logs ]] && mkdir logs
     prepare_buildx
     git_clone
     buildx_build

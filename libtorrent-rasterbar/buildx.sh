@@ -22,7 +22,7 @@ export DOCKERFILE_NAME=${3:-Dockerfile}
 export LIBTORRENT_URL=${4:-https://gitee.com/evine/libtorrent.git}
 
 ## 大版本
-export BIG_VERSION=$(echo ${LIBTORRENT_VERSIONLIBTORRENT_VERSION} | perl -pe "s|(\d+)\..+|\1|")
+export BIG_VERSION=$(echo ${LIBTORRENT_VERSION} | perl -pe "s|(\d+)\..+|\1|")
 
 ## 要构建的平台
 export BUILDX_ARCH="linux/s390x,linux/ppc64le,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386,linux/amd64"
@@ -65,6 +65,7 @@ run_buildx() {
     echo "DOCKERHUB_REPOSITORY=${DOCKERHUB_REPOSITORY}"
     echo "DOCKERFILE_NAME=${DOCKERFILE_NAME}"
     echo "LIBTORRENT_URL=${LIBTORRENT_URL}"
+    [[ ! -d logs ]] && mkdir logs
     prepare_buildx
     git_clone
     buildx_build
