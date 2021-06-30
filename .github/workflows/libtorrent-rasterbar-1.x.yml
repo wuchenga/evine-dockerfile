@@ -71,7 +71,7 @@ jobs:
           platforms: ${{ matrix.architecture }}
           push: true
           build-args: ${{ steps.prepare.outputs.build_args }}
-          tags: ${{ steps.prepare.outputs.tag }}
+          tags: ${{ steps.prepare.outputs.tags }}
 
   manifest:
     runs-on: ubuntu-latest
