@@ -6,8 +6,10 @@ set -o pipefail
 QBITTORRENT_VERSION=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -m1 -E "release-([0-9]+\.?){3,4}$" | sed "s/release-//")
 if [[ ${QBITTORRENT_VERSION} == 4.3* ]]; then
     LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v1(\.[0-9]+){2,3}$" | sed "s/v//")
+    perl -i -pe "s|LIBTORRENT_BIG_VERSION|1|" ${DOCKERFILE_NAME}
 else
     LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v2(\.[0-9]+){2,3}$" | sed "s/v//")
+    perl -i -pe "s|LIBTORRENT_BIG_VERSION|2|" ${DOCKERFILE_NAME}
 fi
 
 ## qBittorrent的各种版本号

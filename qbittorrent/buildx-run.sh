@@ -80,7 +80,7 @@ run_buildx() {
     prepare_buildx
     git_clone
     buildx_build
-    #buildx_manifest
+    #buildx_manifest  ## 如需推送到docker hub则解除注释
 }
 
 ## 记录日志并增加时间戳

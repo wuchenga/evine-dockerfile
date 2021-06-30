@@ -21,6 +21,9 @@ export DOCKERHUB_REPOSITORY=${2:-nevinee/libtorrent-rasterbar}
 export DOCKERFILE_NAME=${3:-Dockerfile}
 export LIBTORRENT_URL=${4:-https://gitee.com/evine/libtorrent.git}
 
+## 大版本
+export BIG_VERSION=$(echo ${LIBTORRENT_VERSIONLIBTORRENT_VERSION} | perl -pe "s|(\d+)\..+|\1|")
+
 ## 要构建的平台
 export BUILDX_ARCH="linux/s390x,linux/ppc64le,linux/arm/v6,linux/arm/v7,linux/arm64,linux/386,linux/amd64"
 
@@ -50,6 +53,7 @@ buildx_build() {
         --platform "${BUILDX_ARCH}" \
         --build-arg "LIBTORRENT_VERSION=${LIBTORRENT_VERSION}" \
         --tag "${DOCKERHUB_REPOSITORY}:${LIBTORRENT_VERSION}" \
+        --tag "${DOCKERHUB_REPOSITORY}:${BIG_VERSION}" \
         --file ${DOCKERFILE_NAME} \
         .
 }

@@ -12,7 +12,8 @@ jobs:
       CONTEXT: libtorrent-rasterbar
       DOCKERFILE_NAME: Dockerfile.GithubAction
       DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/libtorrent-rasterbar
-      BUILDX_ARCH: linux/amd64
+      BUILDX_ARCH: linux/amd64,linux/arm64,linux/arm/v7
+      BIG_VERSION: 1
     steps:
       - 
         name: 检出
@@ -44,7 +45,7 @@ jobs:
       - 
         name: 构建并推送镜像
         run: |
-          LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v1\.([0-9]+\.?){2,3}$" | sed "s/v//")
+          LIBTORRENT_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v${BIG_VERSION}\.([0-9]+\.?){2,3}$" | sed "s/v//")
           echo "LIBTORRENT_VERSION=${LIBTORRENT_VERSION}"
           echo "DOCKERFILE_NAME=${DOCKERFILE_NAME}"
           cd ${CONTEXT}
@@ -56,6 +57,6 @@ jobs:
             --platform "${BUILDX_ARCH}" \
             --build-arg "LIBTORRENT_VERSION=${LIBTORRENT_VERSION}" \
             --tag "${DOCKERHUB_REPOSITORY}:${LIBTORRENT_VERSION}" \
-            --tag "${DOCKERHUB_REPOSITORY}:1" \
+            --tag "${DOCKERHUB_REPOSITORY}:${BIG_VERSION}" \
             --file ${DOCKERFILE_NAME} \
             .
