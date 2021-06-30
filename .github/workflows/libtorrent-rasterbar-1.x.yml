@@ -75,6 +75,7 @@ jobs:
 
   manifest:
     runs-on: ubuntu-latest
+    name: 维护多平台标签
     needs: build
     env:
       DOCKER_CLI_EXPERIMENTAL: enabled
