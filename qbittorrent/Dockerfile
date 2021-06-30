@@ -27,7 +27,6 @@ RUN mkdir /out \
     && cp /usr/local/bin/qbittorrent-nox /out/usr/bin
 
 FROM alpine
-COPY --from=builder /out /
 ENV QBITTORRENT_HOME="/home/qbittorrent" \
     TZ="Asia/Shanghai" \
     PUID="1500" \
@@ -50,6 +49,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo "Asia/Shanghai" > /etc/timezone \
     && useradd qbittorrent -u ${PUID} -U -m -d ${QBITTORRENT_HOME} -s /bin/bash
+COPY --from=builder /out /
 COPY s6-overlay /
 WORKDIR /data
 VOLUME ["/data"]
