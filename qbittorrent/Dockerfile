@@ -23,8 +23,8 @@ RUN cd /tmp/qBittorrent \
 RUN mkdir /out \
     && mkdir -p /out/usr/lib \
     && mkdir -p /out/usr/bin \
-    && cp -d /usr/local/lib/libtorrent-rasterbar.so* /usr/lib \
-    && cp /usr/local/bin/qbittorrent-nox /usr/bin
+    && cp -d /usr/local/lib/libtorrent-rasterbar.so* /out/usr/lib \
+    && cp /usr/local/bin/qbittorrent-nox /out/usr/bin
 
 FROM alpine
 COPY --from=builder /out /
