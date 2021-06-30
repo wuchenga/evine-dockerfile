@@ -15,8 +15,8 @@ jobs:
     outputs:
       full_version: ${{ steps.prepare.outputs.full_version }}
       multitags: ${{ steps.prepare.outputs.multitags }}
-      image_name: ${{ steps.prepare.outputs.image_name }}
-      dockerfile_name: ${{ steps.prepare.outputs.dockerfile_name }}
+      image_name: ${{ env.IMAGE_NAME }}
+      dockerfile_name: ${{ env.DOCKERFILE_NAME }}
     env:
       DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       IMAGE_NAME: qbittorrent
@@ -56,8 +56,6 @@ jobs:
           echo ::set-output name=full_version::${FULL_VERSION}
           echo ::set-output name=multitags::${MULTITAGS}
           echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
-          echo ::set-output name=image_name::${IMAGE_NAME}
-          echo ::set-output name=dockerfile_name::${DOCKERFILE_NAME}
           echo ::set-output name=tags::${TAGS}
 
       - 
@@ -87,8 +85,8 @@ jobs:
         name: Buildx
         uses: docker/build-push-action@v2
         with:
-          context: ${{ steps.prepare.outputs.image_name }}
-          file: ${{ steps.prepare.outputs.image_name }}/${{ steps.prepare.outputs.dockerfile_name }}
+          context: ${{ env.IMAGE_NAME }}
+          file: ${{ env.IMAGE_NAME }}/${{ env.DOCKERFILE_NAME }}
           platforms: ${{ matrix.architecture }}
           push: true
           build-args: ${{ steps.prepare.outputs.build_args }}
