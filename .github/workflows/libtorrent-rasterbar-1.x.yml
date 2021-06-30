@@ -77,7 +77,6 @@ jobs:
     needs: build
     env:
       DOCKER_CLI_EXPERIMENTAL: enabled
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
     steps:
       - 
         name: Checkout
