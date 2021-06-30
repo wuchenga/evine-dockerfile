@@ -1,7 +1,7 @@
 ## 修改自：https://github.com/crazy-max/docker-qbittorrent/blob/master/Dockerfile
 ## 本地构建由buildx-run.sh使用
 
-FROM alpine AS builder
+FROM nevinee/libtorrent-rasterbar:1 AS builder
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk add --update --no-cache \
        autoconf \
@@ -20,11 +20,14 @@ RUN cd /tmp/qBittorrent \
     && make install \
     && ls -al /usr/local/bin/ \
     && qbittorrent-nox --help
+RUN mkdir /out \
+    && mkdir -p /out/usr/lib \
+    && mkdir -p /out/usr/bin \
+    && cp -d /usr/local/lib/libtorrent-rasterbar.so* /usr/lib \
+    && cp /usr/local/bin/qbittorrent-nox /usr/bin
 
 FROM alpine
-ARG LIBTORRENT_VERSION
-COPY --from=nevinee/libtorrent-rasterbar:${LIBTORRENT_VERSION} /usr/lib /usr/lib
-COPY --from=builder /usr/local/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
+COPY --from=builder /out /
 ENV QBITTORRENT_HOME="/home/qbittorrent" \
     TZ="Asia/Shanghai" \
     PUID="1500" \

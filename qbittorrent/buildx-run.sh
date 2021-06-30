@@ -24,7 +24,8 @@ export DOCKERFILE_NAME=${4:-Dockerfile}
 export QBITTORRENT_URL=${5:-https://gitee.com/evine/qBittorrent.git}
 
 ## 要构建的平台
-export BUILDX_ARCH="s390x ppc64le arm/v6 arm/v7 arm64 386 amd64"
+# export BUILDX_ARCH="s390x ppc64le arm/v6 arm/v7 arm64 386 amd64"
+export BUILDX_ARCH=amd64
 
 ## qBittorrent的各种版本号
 RELEASE_SEMVER=${QBITTORRENT_VERSION}
@@ -79,7 +80,7 @@ run_buildx() {
     prepare_buildx
     git_clone
     buildx_build
-    buildx_manifest
+    #buildx_manifest
 }
 
 ## 记录日志并增加时间戳
