@@ -1,7 +1,7 @@
 ## 修改自：https://github.com/crazy-max/docker-qbittorrent/blob/master/Dockerfile
 ## Github Action构建使用
 
-FROM alpine AS builder
+FROM nevinee/libtorrent-rasterbar:1.2.14 AS builder
 RUN apk add --update --no-cache \
        autoconf \
        automake \
@@ -22,8 +22,7 @@ RUN cd /tmp \
     && qbittorrent-nox --help
 
 FROM alpine
-ARG LIBTORRENT_VERSION
-COPY --from=nevinee/libtorrent-rasterbar:${LIBTORRENT_VERSION} /usr/lib /usr/lib
+COPY --from=builder /usr/local/lib /usr/lib
 COPY --from=builder /usr/local/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
 ENV QBITTORRENT_HOME="/home/qbittorrent" \
     TZ="Asia/Shanghai" \
