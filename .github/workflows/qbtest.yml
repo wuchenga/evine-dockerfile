@@ -91,9 +91,7 @@ jobs:
           tags: ${{ steps.prepare.outputs.tags }}
 
   maintain:
-    needs: |
-      base
-      build
+    needs: build
     runs-on: ubuntu-latest
     name: 信息维护
     steps:
@@ -141,9 +139,6 @@ jobs:
           short-description: qbtest ${{ needs.build.outputs.full_version }}：全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
 
   notify:
-    needs: |
-      build
-      maintain
     if: always()
     runs-on: ubuntu-latest
     name: 发送通知
@@ -164,7 +159,7 @@ jobs:
             }
       - 
         name: Send Only Build Success Notify
-        if: ${{ needs.build.result == 'success' && needs.maintain.result == 'failure' }}
+        if: ${{ needs.build.result == 'success' && ! needs.maintain.result == 'success' }}
         uses: zcong1993/actions-ding@master
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
