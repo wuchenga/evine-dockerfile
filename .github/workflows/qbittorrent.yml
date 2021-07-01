@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: 并行构建多平台镜像
+    name: 并行构建
     strategy:
       matrix:
         architecture: [linux/386, linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6, linux/ppc64le, linux/s390x]
@@ -17,7 +17,7 @@ jobs:
       multitags: ${{ steps.prepare.outputs.multitags }}
       image_name: ${{ env.IMAGE_NAME }}
     env:
-      IMAGE_NAME: qbtest
+      IMAGE_NAME: qbittorrent
       DOCKERFILE_NAME: Dockerfile.GithubAction
     steps:
       - 
@@ -92,10 +92,8 @@ jobs:
 
   maintain:
     runs-on: ubuntu-latest
-    name: 维护多平台标签
+    name: 信息维护
     needs: build
-    env:
-      DOCKER_CLI_EXPERIMENTAL: enabled
     steps:
       - 
         name: Checkout
@@ -110,6 +108,8 @@ jobs:
       
       - 
         name: Create And Push Manifest
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
           DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
           ALL_ARCH=(386 amd64 arm64 arm-v7 arm-v6 ppc64le s390x)
@@ -128,15 +128,18 @@ jobs:
             docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"; \
           done
 
-      - name: Update DockerHub Description
+      - 
+        name: Update DockerHub Description
         uses: peter-evans/dockerhub-description@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}
-          short-description: qBittorrent ${{ needs.build.outputs.full_version }}:全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
+          readme-filepath: ./${{ needs.build.outputs.image_name }}/readme.md
+          short-description: qBittorrent ${{ needs.build.outputs.full_version }}: 全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
 
-      - name: Send Dingding Notify
+      - 
+        name: Send Dingding Notify
         uses: zcong1993/actions-ding@master
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
@@ -145,6 +148,6 @@ jobs:
             {
               "msgtype": "text",
               "text": {
-                  "content": "镜像构建成功通知\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像已经构建成功\n构建版本：${{ needs.build.outputs.full_version }}\n镜像链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+                "content": "镜像构建成功通知\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像已经构建成功\n构建版本：${{ needs.build.outputs.full_version }}\n镜像链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
               }
             }

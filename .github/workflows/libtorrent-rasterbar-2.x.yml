@@ -105,7 +105,8 @@ jobs:
           docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}"
           docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.major_version }}"
 
-      - name: Send Dingding Notify
+      - 
+        name: Send Dingding Notify
         uses: zcong1993/actions-ding@master
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
