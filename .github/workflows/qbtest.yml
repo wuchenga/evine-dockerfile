@@ -1,23 +1,31 @@
-name: 构建qBittorrent镜像
+name: 构建qBtest镜像
 on:
   workflow_dispatch:
-  repository_dispatch:
-    types: qbittorrent
 
 jobs:
+  base:
+    runs-on: ubuntu-latest
+    name: 定义架构
+    outputs:
+      matrix: ${{ steps.base.outputs.matrix }}
+    steps:
+      - 
+        id: base
+        run: echo "::set-output name=matrix::{\"architecture\":[\"linux/386\", \"linux/amd64\"]}"
+
   build:
+    needs: base
     runs-on: ubuntu-latest
     name: 并行构建
     strategy:
-      matrix:
-        architecture: [linux/386, linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6, linux/ppc64le, linux/s390x]
-      max-parallel: 7
+      matrix: ${{ fromJSON(needs.base.outputs.matrix) }}
+      max-parallel: 2
     outputs:
       full_version: ${{ steps.prepare.outputs.full_version }}
       multitags: ${{ steps.prepare.outputs.multitags }}
       image_name: ${{ env.IMAGE_NAME }}
     env:
-      IMAGE_NAME: qbittorrent
+      IMAGE_NAME: qbtest
       DOCKERFILE_NAME: Dockerfile.GithubAction
     steps:
       - 
@@ -83,9 +91,9 @@ jobs:
           tags: ${{ steps.prepare.outputs.tags }}
 
   maintain:
+    needs: ［base, build］
     runs-on: ubuntu-latest
     name: 信息维护
-    needs: build
     steps:
       - 
         name: Checkout
@@ -104,7 +112,7 @@ jobs:
           DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
           DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
-          ALL_ARCH=(386 amd64 arm64 arm-v7 arm-v6 ppc64le s390x)
+          ALL_ARCH=( $(echo ${{ needs.base.outputs.matrix }} | jq -r .architecture.[] | perl -pe '{s|linux/||g; s|/|-|g}') )
           MULTITAGS="${{ needs.build.outputs.multitags }}"
           
           IMAGES=()
@@ -128,10 +136,16 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}
           readme-filepath: ./${{ needs.build.outputs.image_name }}/readme.md
-          short-description: qBittorrent ${{ needs.build.outputs.full_version }}: 全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
+          short-description: qbtest ${{ needs.build.outputs.full_version }}: 全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
 
+  notify:
+    needs: ［build, maintain］
+    runs-on: ubuntu-latest
+    name: 发送通知
+    steps:    
       - 
-        name: Send Dingding Notify
+        name: Send All Success Notify
+        if: ${{ needs.build.result == 'success' && needs.maintain.result == 'success' }}
         uses: zcong1993/actions-ding@master
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
@@ -140,6 +154,35 @@ jobs:
             {
               "msgtype": "text",
               "text": {
-                "content": "镜像构建成功通知\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像已经构建成功\n构建版本：${{ needs.build.outputs.full_version }}\n镜像链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+                "content": "镜像构建并维护成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像构建成功，信息维护成功\n版本：${{ needs.build.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+              }
+            }
+      - 
+        name: Send Only Build Success Notify
+        if: ${{ needs.build.result == 'success' && needs.maintain.result == 'failure' }}
+        uses: zcong1993/actions-ding@master
+        with:
+          dingToken: ${{ secrets.DD_BOT_TOKEN }}
+          secret: ${{ secrets.DD_BOT_SECRET }}
+          body: |
+            {
+              "msgtype": "text",
+              "text": {
+                "content": "镜像构建成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像构建成功，但信息维护失败了\n版本：${{ needs.build.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+              }
+            }
+      
+      - 
+        name: Send Failure Notify
+        if: ${{ needs.build.result == 'failure' }}
+        uses: zcong1993/actions-ding@master
+        with:
+          dingToken: ${{ secrets.DD_BOT_TOKEN }}
+          secret: ${{ secrets.DD_BOT_SECRET }}
+          body: |
+            {
+              "msgtype": "text",
+              "text": {
+                "content": "镜像构建失败\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像构建失败\n版本：${{ needs.build.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
               }
             }
