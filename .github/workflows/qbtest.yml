@@ -91,7 +91,7 @@ jobs:
           tags: ${{ steps.prepare.outputs.tags }}
 
   maintain:
-    needs: build
+    needs: [base, build]
     runs-on: ubuntu-latest
     name: 信息维护
     steps:
