@@ -128,7 +128,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}
           readme-filepath: ./${{ needs.build.outputs.image_name }}/readme.md
-          short-description: qBittorrent ${{ needs.build.outputs.full_version }}: 全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
+          short-description: qBittorrent ${{ needs.build.outputs.full_version }}：全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
 
       - 
         name: Send Dingding Notify
