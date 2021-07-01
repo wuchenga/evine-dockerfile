@@ -7,7 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     name: 定义架构
     env:
+      ## 镜像名，也是git仓库中的文件夹名
       IMAGE_NAME: qbtest
+      ## Dockerfile文件名称，在这里修改
       DOCKERFILE_NAME: Dockerfile.GithubAction
     outputs:
       full_version: ${{ steps.base.outputs.full_version }}
@@ -18,12 +20,10 @@ jobs:
       dockerfile_name: ${{ env.DOCKERFILE_NAME }}
     steps:
       - 
-        name: Set Matrix
+        name: Set Matrix And Base Infomation
         id: base
         run: |
           FULL_VERSION=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -m1 -E "release-([0-9]\.?){3,4}$" | sed "s/release-//")
-          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}"
-
           PATCH_VERSION=$(printf "${FULL_VERSION}" | cut -d '.' -f 1-3)
           MINOR_VERSION=$(printf "${FULL_VERSION}" | cut -d '.' -f 1-2)
           MAJOR_VERSION=$(printf "${FULL_VERSION}" | cut -d '.' -f 1)
@@ -37,6 +37,8 @@ jobs:
           echo ::set-output name=full_version::${FULL_VERSION}
           echo ::set-output name=multitags::${MULTITAGS}
           echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
+
+          ## 要构建哪些平台的镜像，在这里修改
           echo "::set-output name=matrix::{\"architecture\":[\"linux/386\", \"linux/amd64\"]}"
 
   build:
@@ -120,17 +122,25 @@ jobs:
           DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
           DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
-          ALL_ARCH=( $(echo "${{ needs.base.outputs.matrix }}" | jq -r .architecture[] | perl -pe '{s|linux/||g; s|/|-|g}') )
+          FULL_VERSION="${{ needs.base.outputs.full_version }}"
+          MATRIX="${{ needs.base.outputs.matrix }}"
+          ALL_ARCH=( $(echo "${MATRIX}" | jq -r .architecture[] | perl -pe '{s|linux/||g; s|/|-|g}') )
           MULTITAGS="${{ needs.base.outputs.multitags }}"
+
+          echo ALL_ARCH[@]=${ALL_ARCH[@]}
           
           IMAGES=()
           for arch in ${ALL_ARCH[@]}; do \
-            IMAGES+=( "${DOCKERHUB_REPOSITORY}:${{ needs.base.outputs.full_version }}-${arch}" ); \
+            IMAGES+=( "${DOCKERHUB_REPOSITORY}:${FULL_VERSION}-${arch}" ); \
           done
+
+          echo IMAGES[@]=${IMAGES[@]}
 
           for tag in ${MULTITAGS}; do \
             docker manifest create "${DOCKERHUB_REPOSITORY}:${tag}" "${IMAGES[@]}"; \
           done
+
+          echo MULTITAGS=${MULTITAGS}
 
           for tag in ${MULTITAGS}; do \
             docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"; \
