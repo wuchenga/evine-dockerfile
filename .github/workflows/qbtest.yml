@@ -139,6 +139,7 @@ jobs:
           short-description: qbtest ${{ needs.build.outputs.full_version }}：全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
 
   notify:
+    needs: maintain
     if: always()
     runs-on: ubuntu-latest
     name: 发送通知
