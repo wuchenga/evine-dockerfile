@@ -94,14 +94,26 @@ jobs:
           DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
           IMAGES=()
           ALL_ARCH=(386 amd64 arm64 arm-v7 arm-v6 ppc64le s390x)
+          
           for arch in ${ALL_ARCH[@]}; do \
             IMAGES+=( "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}-${arch}" ); \
           done
+          
           docker manifest create "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}" "${IMAGES[@]}"
           docker manifest create "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.major_version }}" "${IMAGES[@]}"
+          
           docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}"
           docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.major_version }}"
 
-          ## 发送消息
-          curl -Ss -X POST -d "text=libtorrent1.x镜像构建完成&desp=GithubAction已经自动构建完成libtorrent2.x" "https://iyuu.cn/${{ secrets.IYUU_TOKEN}}.send"
-
+      - name: Send Dingding Notify
+        uses: zcong1993/actions-ding@master
+        with:
+          dingToken: ${{ secrets.DD_BOT_TOKEN }}
+          secret: ${{ secrets.DD_BOT_SECRET }}
+          body: |
+            {
+              "msgtype": "text",
+              "text": {
+                  "content": "镜像构建成功通知\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像已经构建成功\n构建版本：${{ needs.build.outputs.full_version }}\n镜像链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+              }
+            }

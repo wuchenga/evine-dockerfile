@@ -17,7 +17,7 @@ jobs:
       multitags: ${{ steps.prepare.outputs.multitags }}
       image_name: ${{ env.IMAGE_NAME }}
     env:
-      IMAGE_NAME: qbittorrent
+      IMAGE_NAME: qbtest
       DOCKERFILE_NAME: Dockerfile.GithubAction
     steps:
       - 
@@ -90,7 +90,7 @@ jobs:
           build-args: ${{ steps.prepare.outputs.build_args }}
           tags: ${{ steps.prepare.outputs.tags }}
 
-  manifest:
+  maintain:
     runs-on: ubuntu-latest
     name: 维护多平台标签
     needs: build
@@ -128,14 +128,23 @@ jobs:
             docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"; \
           done
 
-          ## 发送消息
-          curl -Ss -X POST -d "text=qBittorrent镜像构建完成&desp=GithubAction已经自动构建完成qBittorrent" "https://iyuu.cn/${{ secrets.IYUU_TOKEN}}.send"
-
       - name: Update DockerHub Description
         uses: peter-evans/dockerhub-description@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}
-          short-description: qBittorrent ${{ needs.build.outputs.full_version }}: 全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
+          short-description: qBittorrent ${{ needs.build.outputs.full_version }}:全平台, 下载完成通知, 自动分类, tracker错误标记, 宕机通知, 日志显示
 
+      - name: Send Dingding Notify
+        uses: zcong1993/actions-ding@master
+        with:
+          dingToken: ${{ secrets.DD_BOT_TOKEN }}
+          secret: ${{ secrets.DD_BOT_SECRET }}
+          body: |
+            {
+              "msgtype": "text",
+              "text": {
+                  "content": "镜像构建成功通知\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像已经构建成功\n构建版本：${{ needs.build.outputs.full_version }}\n镜像链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+              }
+            }
