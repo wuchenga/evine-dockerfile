@@ -10,9 +10,12 @@ jobs:
   dockerHubDescription:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - 
+      name: Checkout
+      uses: actions/checkout@v2
 
-    - name: Docker Hub Description
+    - 
+      name: Update DockerHub Readme
       uses: peter-evans/dockerhub-description@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
