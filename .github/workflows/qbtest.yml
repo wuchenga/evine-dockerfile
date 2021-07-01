@@ -51,7 +51,7 @@ jobs:
     name: 并行构建
     strategy:
       matrix: ${{ fromJSON(needs.base.outputs.matrix) }}
-      max-parallel: ${{ needs.base.outputs.max_parallel }}
+      max-parallel: ${{ fromJSON(needs.base.outputs.max_parallel) }}
     steps:
       - 
         name: Checkout
