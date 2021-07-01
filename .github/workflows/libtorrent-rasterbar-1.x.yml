@@ -102,8 +102,6 @@ jobs:
           docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}"
           docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.major_version }}"
 
-      - 
-        name: Clear
-        if: always()
-        run: |
-          rm -rf ${HOME}/.docker/config.json
+          ## 发送消息
+          curl -Ss -X POST -d "text=libtorrent1.x镜像构建完成&desp=GithubAction已经自动构建完成libtorrent1.x" "https://iyuu.cn/${{ secrets.IYUU_TOKEN}}.send"
+
