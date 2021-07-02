@@ -5,20 +5,47 @@ on:
     types: libtorrent-rasterbar-2.x
 
 jobs:
-  build:
+  base:
     runs-on: ubuntu-latest
-    name: 并行构建多平台镜像
-    strategy:
-      matrix:
-        architecture: [linux/386, linux/amd64, linux/arm64, linux/arm/v7, linux/arm/v6, linux/ppc64le, linux/s390x]
-      max-parallel: 7
-    outputs:
-      full_version: ${{ steps.prepare.outputs.full_version }}
-      major_version: ${{ env.MAJOR_VERSION }}
-      image_name: ${{ env.IMAGE_NAME }}
+    name: 基本信息
     env:
+      ## 镜像名，也是git仓库中的文件夹名
       IMAGE_NAME: libtorrent-rasterbar
+      ## Dockerfile文件名称，在这里修改
+      DOCKERFILE_NAME: Dockerfile.GithubAction
+      ## 大版本
       MAJOR_VERSION: 2
+    outputs:
+      full_version: ${{ steps.base.outputs.full_version }}
+      build_args: ${{ steps.base.outputs.build_args }}
+      matrix: ${{ steps.base.outputs.matrix }}
+      max_parallel: ${{ steps.base.outputs.max_parallel }}
+      image_name: ${{ env.IMAGE_NAME }}
+      dockerfile_name: ${{ env.DOCKERFILE_NAME }}
+      major_version: ${{ env.MAJOR_VERSION }}
+    steps:
+      - 
+        name: Set Matrix And Base Infomation
+        id: base
+        run: |
+          FULL_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v${MAJOR_VERSION}\.([0-9]+\.?){2,3}$" | sed "s/v//")
+
+          ## 要构建哪些平台的镜像，在这里修改
+          MATRIX='{"architecture":["linux/386", "linux/amd64", "linux/arm64", "linux/arm/v7", "linux/arm/v6", "linux/ppc64le", "linux/s390x"]}'
+          MAX_PARALLEL=$(echo ${MATRIX} | jq .'architecture|length')
+
+          echo ::set-output name=full_version::${FULL_VERSION}
+          echo ::set-output name=build_args::LIBTORRENT_VERSION=${FULL_VERSION}
+          echo ::set-output name=matrix::${MATRIX}
+          echo ::set-output name=max_parallel::${MAX_PARALLEL}
+
+  build:
+    needs: base
+    runs-on: ubuntu-latest
+    name: 并行构建
+    strategy:
+      matrix: ${{ fromJSON(needs.base.outputs.matrix) }}
+      max-parallel: ${{ fromJSON(needs.base.outputs.max_parallel) }}
     steps:
       - 
         name: Checkout
@@ -28,12 +55,11 @@ jobs:
         name: Prepare
         id: prepare
         run: |
-          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}"
-          FULL_VERSION=$(curl -s https://api.github.com/repos/arvidn/libtorrent/tags | jq -r .[]."name" | grep -m1 -E "v${MAJOR_VERSION}\.([0-9]+\.?){2,3}$" | sed "s/v//")
-          ARCH=${{ matrix.architecture }}
+          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+          FULL_VERSION="${{ needs.base.outputs.full_version }}"
+          ARCH="${{ matrix.architecture }}"
           TAGS="${DOCKERHUB_REPOSITORY}:${FULL_VERSION}-$(echo ${ARCH} | perl -pe '{s|linux/||g; s|/|-|g}')"
-          echo ::set-output name=full_version::${FULL_VERSION}
-          echo ::set-output name=build_args::LIBTORRENT_VERSION=${FULL_VERSION}
+
           echo ::set-output name=tags::${TAGS}
 
       - 
@@ -55,19 +81,17 @@ jobs:
         name: Buildx
         uses: docker/build-push-action@v2
         with:
-          context: ${{ env.IMAGE_NAME }}
-          file: ${{ env.IMAGE_NAME }}/Dockerfile.GithubAction
+          context: ${{ needs.base.outputs.image_name }}
+          file: ${{ needs.base.outputs.image_name }}/${{ needs.base.outputs.dockerfile_name }}
           platforms: ${{ matrix.architecture }}
           push: true
-          build-args: ${{ steps.prepare.outputs.build_args }}
+          build-args: ${{ needs.base.outputs.build_args }}
           tags: ${{ steps.prepare.outputs.tags }}
 
   manifest:
+    needs: [base, build]
     runs-on: ubuntu-latest
-    name: 维护多平台标签
-    needs: build
-    env:
-      DOCKER_CLI_EXPERIMENTAL: enabled
+    name: 信息维护
     steps:
       - 
         name: Checkout
@@ -82,31 +106,76 @@ jobs:
       
       - 
         name: Create And Push Manifest
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
-          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+          FULL_VERSION="${{ needs.base.outputs.full_version }}"
+          MAJOR_VERSION="${{ needs.base.outputs.major_version }}"
+          MATRIX='${{ needs.base.outputs.matrix }}'
+          ALL_ARCH=( $(echo ${MATRIX} | jq -r .architecture[] | perl -pe '{s|linux/||g; s|/|-|g}') )
+          
           IMAGES=()
-          ALL_ARCH=(386 amd64 arm64 arm-v7 arm-v6 ppc64le s390x)
-          
           for arch in ${ALL_ARCH[@]}; do \
-            IMAGES+=( "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}-${arch}" ); \
+            IMAGES+=( "${DOCKERHUB_REPOSITORY}:${FULL_VERSION}-${arch}" ); \
           done
-          
-          docker manifest create "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}" "${IMAGES[@]}"
-          docker manifest create "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.major_version }}" "${IMAGES[@]}"
-          
-          docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.full_version }}"
-          docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${{ needs.build.outputs.major_version }}"
 
+          docker manifest create "${DOCKERHUB_REPOSITORY}:${FULL_VERSION}" "${IMAGES[@]}"
+          docker manifest create "${DOCKERHUB_REPOSITORY}:${MAJOR_VERSION}" "${IMAGES[@]}"
+          
+          docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${FULL_VERSION}"
+          docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${MAJOR_VERSION}"
+
+  notify:
+    needs: [base, build, maintain]
+    if: always()
+    runs-on: ubuntu-latest
+    name: 发送通知
+    steps:    
       - 
-        name: Send Dingding Notify
+        name: Send All Success Notify
+        if: ${{ needs.build.result == 'success' && needs.maintain.result == 'success' }}
         uses: zcong1993/actions-ding@master
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
           secret: ${{ secrets.DD_BOT_SECRET }}
+          ignoreError: true
           body: |
             {
               "msgtype": "text",
               "text": {
-                  "content": "镜像构建成功通知\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}镜像已经构建成功\n构建版本：${{ needs.build.outputs.full_version }}\n镜像链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.build.outputs.image_name }}"
+                "content": "镜像构建并维护成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}镜像构建成功，信息维护成功\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+              }
+            }
+            
+      - 
+        name: Send Only Build Success Notify
+        if: ${{ needs.build.result == 'success' && needs.maintain.result != 'success' }}
+        uses: zcong1993/actions-ding@master
+        with:
+          dingToken: ${{ secrets.DD_BOT_TOKEN }}
+          secret: ${{ secrets.DD_BOT_SECRET }}
+          ignoreError: true
+          body: |
+            {
+              "msgtype": "text",
+              "text": {
+                "content": "镜像构建成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}镜像构建成功，但信息维护失败了\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+              }
+            }
+      
+      - 
+        name: Send Failure Notify
+        if: ${{ needs.build.result == 'failure' }}
+        uses: zcong1993/actions-ding@master
+        with:
+          dingToken: ${{ secrets.DD_BOT_TOKEN }}
+          secret: ${{ secrets.DD_BOT_SECRET }}
+          ignoreError: true
+          body: |
+            {
+              "msgtype": "text",
+              "text": {
+                "content": "镜像构建失败\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}镜像构建失败\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
               }
             }

@@ -7,7 +7,7 @@ on:
 jobs:
   base:
     runs-on: ubuntu-latest
-    name: 定义架构
+    name: 基本信息
     env:
       ## 镜像名，也是git仓库中的文件夹名
       IMAGE_NAME: qbittorrent
@@ -183,6 +183,7 @@ jobs:
                 "content": "镜像构建并维护成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}镜像构建成功，信息维护成功\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
               }
             }
+            
       - 
         name: Send Only Build Success Notify
         if: ${{ needs.build.result == 'success' && needs.maintain.result != 'success' }}
