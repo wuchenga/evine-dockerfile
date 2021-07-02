@@ -5,7 +5,7 @@ on:
     - cron:  '23 6,18 * * *'
   workflow_dispatch:
   repository_dispatch:
-    types: mirror
+    types: [mirror, qbittorrent, qbittorrent-beta]
 
 concurrency:
   group: git-mirror

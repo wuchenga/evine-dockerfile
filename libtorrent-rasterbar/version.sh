@@ -20,25 +20,12 @@ ver_lib2_local=$(cat 2.x.version)
 . $dir_myscripts/notify.sh
 . $dir_myscripts/my_config.sh
 
-## 检测官方版本与本地版本是否一致
+cmd_dispatches="curl -X POST -H \"Accept: application/vnd.github.v3+json\" -H \"Authorization: token ${GITHUB_MIRROR_TOKEN}\" https://api.github.com/repos/nevinen/dockerfiles/dispatches"
+
+## 检测官方版本与本地版本是否一致，如不一致则触发Github Action构建镜像
 if [[ $ver_lib1_official ]]; then
     if [[ $ver_lib1_official != $ver_lib1_local ]]; then
-        ## 触发　Github Action 同步源代码到Gitee
-        curl \
-            -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${GITHUB_MIRROR_TOKEN}" \
-            -d '{"event_type":"mirror"}' \
-            https://api.github.com/repos/nevinen/dockerfiles/dispatches
-        
-        ## 触发Github Action构建libtorrent-rasterbar-1.x镜像
-        curl \
-            -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${GITHUB_MIRROR_TOKEN}" \
-            -d '{"event_type":"libtorrent-rasterbar-1.x"}' \
-            https://api.github.com/repos/nevinen/dockerfiles/dispatches
-        
+        $cmd_dispatches -d '{"event_type":"libtorrent-rasterbar-1.x"}'
         [[ $? -eq 0 ]] && {
             notify "libtorrent-1.x已经升级" "当前官方版本: ${ver_lib1_official}\n当前本地版本: ${ver_lib1_local}\n已经向 Github Action 触发构建程序"
             echo "$ver_lib1_official" > 1.x.version
@@ -50,22 +37,7 @@ fi
 
 if [[ $ver_lib2_official ]]; then
     if [[ $ver_lib2_official != $ver_lib2_local ]]; then
-        ## 触发　Github Action 同步源代码到Gitee
-        curl \
-            -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${GITHUB_MIRROR_TOKEN}" \
-            -d '{"event_type":"mirror"}' \
-            https://api.github.com/repos/nevinen/dockerfiles/dispatches
-        
-        ## 触发Github Action构建libtorrent-rasterbar-2.x镜像
-        curl \
-            -X POST \
-            -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${GITHUB_MIRROR_TOKEN}" \
-            -d '{"event_type":"libtorrent-rasterbar-2.x"}' \
-            https://api.github.com/repos/nevinen/dockerfiles/dispatches
-        
+        $cmd_dispatches -d '{"event_type":"libtorrent-rasterbar-2.x"}'
         [[ $? -eq 0 ]] && {
             notify "libtorrent-2.x已经升级" "当前官方版本: ${ver_lib2_official}\n当前本地版本: ${ver_lib2_local}\n已经向 Github Action 触发构建程序"
             echo "$ver_lib2_official" > 2.x.version
