@@ -123,6 +123,7 @@ jobs:
         run: |
           DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}"
           FULL_VERSION="${{ needs.base.outputs.full_version }}"
+          MATRIX='${{ needs.base.outputs.matrix }}'
           ALL_ARCH=( $(echo ${MATRIX} | jq -r .architecture[] | perl -pe '{s|linux/||g; s|/|-|g}') )
           MULTITAGS="${{ needs.base.outputs.multitags }}"
 
