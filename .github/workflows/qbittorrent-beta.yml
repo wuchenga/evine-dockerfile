@@ -1,25 +1,24 @@
 name: 构建qBittorrent-beta镜像
+
 on:
   workflow_dispatch:
   repository_dispatch:
     types: qbittorrent-beta
 
+env:
+  ## 镜像名，也是git仓库中的文件夹名
+  IMAGE_NAME: qbittorrent
+  ## Dockerfile文件名称，在这里修改
+  DOCKERFILE_NAME: Dockerfile.GithubAction
+
 jobs:
   base:
     runs-on: ubuntu-latest
     name: 基本信息
-    env:
-      ## 镜像名，也是git仓库中的文件夹名
-      IMAGE_NAME: qbittorrent
-      ## Dockerfile文件名称，在这里修改
-      DOCKERFILE_NAME: Dockerfile.GithubAction
     outputs:
       full_version: ${{ steps.base.outputs.full_version }}
       build_args: ${{ steps.base.outputs.build_args }}
       matrix: ${{ steps.base.outputs.matrix }}
-      max_parallel: ${{ steps.base.outputs.max_parallel }}
-      image_name: ${{ env.IMAGE_NAME }}
-      dockerfile_name: ${{ env.DOCKERFILE_NAME }}
     steps:
       - 
         name: Set Matrix And Base Infomation
@@ -29,12 +28,10 @@ jobs:
        
           ## 要构建哪些平台的镜像，在这里修改
           MATRIX='{"architecture":["linux/386", "linux/amd64", "linux/arm64", "linux/arm/v7", "linux/arm/v6", "linux/ppc64le", "linux/s390x"]}'
-          MAX_PARALLEL=$(echo ${MATRIX} | jq .'architecture|length')
 
           echo ::set-output name=full_version::${FULL_VERSION}
           echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
           echo ::set-output name=matrix::${MATRIX}
-          echo ::set-output name=max_parallel::${MAX_PARALLEL}
 
   build:
     needs: base
@@ -42,7 +39,6 @@ jobs:
     name: 并行构建
     strategy:
       matrix: ${{ fromJSON(needs.base.outputs.matrix) }}
-      max-parallel: ${{ fromJSON(needs.base.outputs.max_parallel) }}
     steps:
       - 
         name: Checkout
@@ -53,8 +49,6 @@ jobs:
         id: prepare
         run: |
           FULL_VERSION="${{ needs.base.outputs.full_version }}"
-          IMAGE_NAME="${{ needs.base.outputs.image_name }}"
-          DOCKERFILE_NAME="${{ needs.base.outputs.dockerfile_name }}"
           DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
           ARCH="${{ matrix.architecture }}"
           
@@ -88,8 +82,8 @@ jobs:
         name: Buildx
         uses: docker/build-push-action@v2
         with:
-          context: ${{ needs.base.outputs.image_name }}
-          file: ${{ needs.base.outputs.image_name }}/${{ needs.base.outputs.dockerfile_name }}
+          context: ${{ env.IMAGE_NAME }}
+          file: ${{ env.IMAGE_NAME }}/${{ env.DOCKERFILE_NAME }}
           platforms: ${{ matrix.architecture }}
           push: true
           build-args: ${{ needs.base.outputs.build_args }}
@@ -116,7 +110,7 @@ jobs:
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
-          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}"
           FULL_VERSION="${{ needs.base.outputs.full_version }}"
           MATRIX='${{ needs.base.outputs.matrix }}'
           ALL_ARCH=( $(echo ${MATRIX} | jq -r .architecture[] | perl -pe '{s|linux/||g; s|/|-|g}') )
@@ -151,7 +145,7 @@ jobs:
             {
               "msgtype": "text",
               "text": {
-                "content": "镜像构建并维护成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}镜像构建成功，信息维护成功\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+                "content": "镜像构建并维护成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}镜像构建成功，信息维护成功\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}"
               }
             }
             
@@ -167,7 +161,7 @@ jobs:
             {
               "msgtype": "text",
               "text": {
-                "content": "镜像构建成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}镜像构建成功，但信息维护失败了\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+                "content": "镜像构建成功\n\n${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}镜像构建成功，但信息维护失败了\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}"
               }
             }
       
@@ -183,6 +177,6 @@ jobs:
             {
               "msgtype": "text",
               "text": {
-                "content": "镜像构建失败\n\n${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}镜像构建失败\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ needs.base.outputs.image_name }}"
+                "content": "镜像构建失败\n\n${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}镜像构建失败\n版本：${{ needs.base.outputs.full_version }}\n链接：https://hub.docker.com/repository/docker/${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}"
               }
             }
