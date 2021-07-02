@@ -173,6 +173,7 @@ jobs:
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
           secret: ${{ secrets.DD_BOT_SECRET }}
+          ignoreError: true
           body: |
             {
               "msgtype": "text",
@@ -187,6 +188,7 @@ jobs:
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
           secret: ${{ secrets.DD_BOT_SECRET }}
+          ignoreError: true
           body: |
             {
               "msgtype": "text",
@@ -202,6 +204,7 @@ jobs:
         with:
           dingToken: ${{ secrets.DD_BOT_TOKEN }}
           secret: ${{ secrets.DD_BOT_SECRET }}
+          ignoreError: true
           body: |
             {
               "msgtype": "text",
