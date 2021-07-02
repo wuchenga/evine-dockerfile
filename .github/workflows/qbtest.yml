@@ -9,9 +9,6 @@ env:
 
   ## Dockerfile文件名称，在这里修改
   DOCKERFILE_NAME: Dockerfile.GithubAction
-  
-  ## 要构建哪些平台的镜像，在这里修改
-  MATRIX: {"architecture": ["linux/386", "linux/amd64"]}
 
 jobs:
   base:
@@ -21,7 +18,7 @@ jobs:
       full_version: ${{ steps.base.outputs.full_version }}
       multitags: ${{ steps.base.outputs.multitags }}
       build_args: ${{ steps.base.outputs.build_args }}
-      matrix: ${{ env.MATRIX }}
+      matrix: ${{ steps.base.outputs.matrix }}
     steps:
       - 
         name: Set Matrix And Base Infomation
@@ -36,11 +33,15 @@ jobs:
             MULTITAGS="${MAJOR_VERSION} ${MINOR_VERSION} ${FULL_VERSION} latest"; \
           else \
             MULTITAGS="${MAJOR_VERSION} ${MINOR_VERSION} ${PATCH_VERSION} ${FULL_VERSION} latest"; \
-          fi         
+          fi
+
+          ## 要构建哪些平台的镜像，在这里修改
+          MATRIX='{"architecture": ["linux/386", "linux/amd64"]}'
 
           echo ::set-output name=full_version::${FULL_VERSION}
           echo ::set-output name=multitags::${MULTITAGS}
           echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
+          echo ::set-output name=matrix::${MATRIX}
 
   build:
     needs: base
