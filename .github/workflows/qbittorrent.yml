@@ -20,7 +20,6 @@ jobs:
       multitags: ${{ steps.base.outputs.multitags }}
       build_args: ${{ steps.base.outputs.build_args }}
       matrix: ${{ steps.base.outputs.matrix }}
-      max_parallel: ${{ steps.base.outputs.max_parallel }}
     steps:
       - 
         name: Set Matrix And Base Infomation
@@ -39,21 +38,19 @@ jobs:
 
           ## 要构建哪些平台的镜像，在这里修改
           MATRIX='{"architecture":["linux/386", "linux/amd64", "linux/arm64", "linux/arm/v7", "linux/arm/v6", "linux/ppc64le", "linux/s390x"]}'
-          MAX_PARALLEL=$(echo ${MATRIX} | jq .'architecture|length')
 
           echo ::set-output name=full_version::${FULL_VERSION}
           echo ::set-output name=multitags::${MULTITAGS}
           echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
           echo ::set-output name=matrix::${MATRIX}
-          echo ::set-output name=max_parallel::${MAX_PARALLEL}
 
   build:
     needs: base
     runs-on: ubuntu-latest
     name: 并行构建
+    timeout-minutes: 150
     strategy:
       matrix: ${{ fromJSON(needs.base.outputs.matrix) }}
-      max-parallel: ${{ fromJSON(needs.base.outputs.max_parallel) }}
     steps:
       - 
         name: Checkout

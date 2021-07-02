@@ -37,6 +37,7 @@ jobs:
     needs: base
     runs-on: ubuntu-latest
     name: 并行构建
+    timeout-minutes: 150
     strategy:
       matrix: ${{ fromJSON(needs.base.outputs.matrix) }}
     steps:

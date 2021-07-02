@@ -6,8 +6,12 @@ on:
 env:
   ## 镜像名，也是git仓库中的文件夹名
   IMAGE_NAME: qbtest
+
   ## Dockerfile文件名称，在这里修改
   DOCKERFILE_NAME: Dockerfile.GithubAction
+  
+  ## 要构建哪些平台的镜像，在这里修改
+  MATRIX: {"architecture": ["linux/386", "linux/amd64"]}
 
 jobs:
   base:
@@ -17,8 +21,7 @@ jobs:
       full_version: ${{ steps.base.outputs.full_version }}
       multitags: ${{ steps.base.outputs.multitags }}
       build_args: ${{ steps.base.outputs.build_args }}
-      matrix: ${{ steps.base.outputs.matrix }}
-      max_parallel: ${{ steps.base.outputs.max_parallel }}
+      matrix: ${{ env.MATRIX }}
     steps:
       - 
         name: Set Matrix And Base Infomation
@@ -33,25 +36,19 @@ jobs:
             MULTITAGS="${MAJOR_VERSION} ${MINOR_VERSION} ${FULL_VERSION} latest"; \
           else \
             MULTITAGS="${MAJOR_VERSION} ${MINOR_VERSION} ${PATCH_VERSION} ${FULL_VERSION} latest"; \
-          fi
-
-          ## 要构建哪些平台的镜像，在这里修改
-          MATRIX='{"architecture":["linux/386", "linux/amd64"]}'
-          MAX_PARALLEL=$(echo ${MATRIX} | jq .'architecture|length')
+          fi         
 
           echo ::set-output name=full_version::${FULL_VERSION}
           echo ::set-output name=multitags::${MULTITAGS}
           echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
-          echo ::set-output name=matrix::${MATRIX}
-          echo ::set-output name=max_parallel::${MAX_PARALLEL}
 
   build:
     needs: base
     runs-on: ubuntu-latest
     name: 并行构建
+    timeout-minutes: 150
     strategy:
       matrix: ${{ fromJSON(needs.base.outputs.matrix) }}
-      max-parallel: ${{ fromJSON(needs.base.outputs.max_parallel) }}
     steps:
       - 
         name: Checkout
@@ -125,7 +122,6 @@ jobs:
         run: |
           DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}"
           FULL_VERSION="${{ needs.base.outputs.full_version }}"
-          MATRIX='${{ needs.base.outputs.matrix }}'
           ALL_ARCH=( $(echo ${MATRIX} | jq -r .architecture[] | perl -pe '{s|linux/||g; s|/|-|g}') )
           MULTITAGS="${{ needs.base.outputs.multitags }}"
 
