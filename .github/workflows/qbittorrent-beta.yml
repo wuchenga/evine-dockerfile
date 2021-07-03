@@ -24,7 +24,7 @@ jobs:
         name: Set Matrix And Base Infomation
         id: base
         run: |
-          FULL_VERSION=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -m1 -E "release-([0-9]\.?){3,4}[a-zA-Z]+.*" | sed "s/release-//")
+          FULL_VERSION=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -m1 -E "release-([0-9]{1,2}\.?){3,4}[a-zA-Z]+.*" | sed "s/release-//")
        
           ## 要构建哪些平台的镜像，在这里修改
           MATRIX='{"architecture":["linux/386", "linux/amd64", "linux/arm64", "linux/arm/v7", "linux/arm/v6", "linux/ppc64le", "linux/s390x"]}'
