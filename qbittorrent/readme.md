@@ -7,9 +7,7 @@
 - 每4小时检查一下tracker状态，如发现种子的tracker状态有问题，将给该种子添加`TrackerError`的标签，方便筛选；
 - 日志输出到docker控制台，可从portainer查看；
 - `python`为可选项，设置为`true`才安装（2021-06-17调整，详见环境变量清单）；
-- 体积很小；
-- 默认中文UI；
-- 默认东八区时区；
+- 体积很小，默认中文UI，默认东八区时区；
 - 多标签可用，形如`latest` `4` `4.x` `4.x.x`，均是多平台标签，可用平台：`amd64` `386` `arm/v6` `arm/v7` `arm64` `s390x`。
 
 ## 更新日志
@@ -63,9 +61,11 @@ docker run -dit \
   nevinee/qbittorrent
 ```
 
-armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。可以增加`--security-opt seccomp=unconfined` 来解决。
+- armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。可以增加`--security-opt seccomp=unconfined` 来解决。
 
-创建完成后请访问`http://<IP>:<WEBUI_PORT>`来作进一步设置，初始用户名密码：`admin/adminadmin`。如要在公网访问，请务必修改用户名和密码。
+- 创建完成后请访问`http://<IP>:<WEBUI_PORT>`来作进一步设置，初始用户名密码：`admin/adminadmin`。如要在公网访问，请务必修改用户名和密码。
+
+- 如想参与qbittorrent测试工作，可以指定测试标签，如`nevinee/qbittorrent:4.4.0beta1`。
 
 **docker-compose**
 
@@ -129,9 +129,11 @@ networks:
     external: true
 ```
 
-armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。
+- armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。
 
-创建完成后请访问`http://<IP>:<WEBUI_PORT>`来作进一步设置，初始用户名密码：`admin/adminadmin`。如要在公网访问，请务必修改用户名和密码。
+- 创建完成后请访问`http://<IP>:<WEBUI_PORT>`来作进一步设置，初始用户名密码：`admin/adminadmin`。如要在公网访问，请务必修改用户名和密码。
+
+- 如想参与qbittorrent测试工作，可以指定测试标签，如`nevinee/qbittorrent:4.4.0beta1`。
 
 ## 目录说明
 
@@ -261,7 +263,7 @@ docker logs -f qbittorrent
 
 - [crazymax/qbittorrent](https://hub.docker.com/r/crazymax/qbittorrent) , 参考了Dockerfile; 
   
-- [80x86/qbittorrent](https://hub.docker.com/r/80x86/qbittorrent), 借鉴了标签和分类的理念，正因为此镜像源码未公开，且长期不更新，并且集成acme会和acme本身的项目重复，这才催生我重写代码；
+- [80x86/qbittorrent](https://hub.docker.com/r/80x86/qbittorrent), 借鉴了标签和分类的理念，正因为此镜像源码未公开，且长期不更新，这才催生我重写代码；
 
 - [arpaulnet/s6-overlay-stage](https://hub.docker.com/r/arpaulnet/s6-overlay-stage), 学习了多平台镜像制作方法。
 
