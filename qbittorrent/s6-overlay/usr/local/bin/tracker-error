@@ -45,7 +45,7 @@ main() {
         sleep 1
     done
     if [[ $tracker_error_count -gt 0 && $tracker_error_count -ge $TRACKER_ERROR_COUNT_MIN ]]; then
-        notify "${HOSTNAME}:tracker出错通知" "主机：${HOSTNAME}\n时间：$(date +'%Y-%m-%d %H:%M:%S')\n注意：当前有${tracker_error_count}个种子tracker出错，建议检查一下\n说明：您收到本通知是因为您设置了通知阈值TRACKER_ERROR_COUNT_MIN=${TRACKER_ERROR_COUNT_MIN}"
+        notify "${HOSTNAME}:tracker出错通知" "主机：${HOSTNAME}\n时间：$(date +'%Y-%m-%d %H:%M:%S')\n注意：当前有${tracker_error_count}个种子tracker出错，建议检查一下\n说明：您收到本通知是因为您设置了通知阈值TRACKER_ERROR_COUNT_MIN=${TRACKER_ERROR_COUNT_MIN}(默认值:1)"
     fi
 }
 
