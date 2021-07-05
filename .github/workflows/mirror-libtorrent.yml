@@ -1,8 +1,8 @@
 name: 同步libtorrent仓库到Gitee
 
 on:
-  schedule:
-    - cron:  '16 6,18 * * *'
+  #schedule:
+    #- cron:  '16 6,18 * * *'
   workflow_dispatch:
   repository_dispatch:
     types: [mirror, libtorrent-rasterbar, libtorrent-rasterbar-1.x, libtorrent-rasterbar-2.x]
