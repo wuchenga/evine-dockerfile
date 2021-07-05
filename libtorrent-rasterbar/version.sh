@@ -33,6 +33,7 @@ fi
 if [[ $ver_lib1_official ]]; then
     if [[ $ver_lib1_official != $ver_lib1_local ]]; then
         # $cmd_dispatches -d '{"event_type":"libtorrent-rasterbar-1.x"}'  ## 改用gh workflow触发
+        sleep 3
         gh workflow run litorrent-rasterbar.yml -f version=$ver_lib1_official
         [[ $? -eq 0 ]] && {
             notify "libtorrent-1.x已经升级" "当前官方版本: ${ver_lib1_official}\n当前本地版本: ${ver_lib1_local}\n已经向 Github Action 触发构建程序"
@@ -42,10 +43,11 @@ if [[ $ver_lib1_official ]]; then
         echo -e "libtorrent-1.x版本无变化，均为${ver_lib1_official}"
     fi
 fi
-sleep 3
+
 if [[ $ver_lib2_official ]]; then
     if [[ $ver_lib2_official != $ver_lib2_local ]]; then
         # $cmd_dispatches -d '{"event_type":"libtorrent-rasterbar-2.x"}'  ## 改用gh workflow触发
+        sleep 3
         gh workflow run litorrent-rasterbar.yml -f version=$ver_lib2_official
         [[ $? -eq 0 ]] && {
             notify "libtorrent-2.x已经升级" "当前官方版本: ${ver_lib2_official}\n当前本地版本: ${ver_lib2_local}\n已经向 Github Action 触发构建程序"
