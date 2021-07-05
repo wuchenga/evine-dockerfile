@@ -23,8 +23,8 @@ jobs:
     outputs:
       full_version: ${{ steps.base.outputs.full_version }}
       multitags: ${{ steps.base.outputs.multitags }}
-      build_args: ${{ steps.base.outputs.build_args }}
       matrix: ${{ steps.base.outputs.matrix }}
+      build_args: ${{ steps.base.outputs.build_args }}
     steps:
       - 
         name: Set Matrix And Base Infomation
@@ -32,6 +32,7 @@ jobs:
         run: |
           FULL_VERSION=${{ github.event.inputs.version }}
           
+          ######################### ↓特殊部分↓ #########################
           if [[ -z ${FULL_VERSION} ]]; then
             FULL_VERSION=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags | jq -r .[]."name" | grep -m1 -E "release-([0-9]{1,2}\.?){3,4}$" | sed "s/release-//")
           fi
@@ -49,14 +50,18 @@ jobs:
           else
             MULTITAGS="${FULL_VERSION}"
           fi
+          ######################### ↑特殊部分↑ #########################
 
           ## 要构建哪些平台的镜像，在这里修改
           MATRIX='{"architecture":["linux/386", "linux/amd64", "linux/arm64", "linux/arm/v7", "linux/arm/v6", "linux/ppc64le", "linux/s390x"]}'
 
           echo ::set-output name=full_version::${FULL_VERSION}
           echo ::set-output name=multitags::${MULTITAGS}
-          echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
           echo ::set-output name=matrix::${MATRIX}
+
+          ######################### ↓特殊部分↓ #########################
+          echo ::set-output name=build_args::QBITTORRENT_VERSION=${FULL_VERSION}
+          ######################### ↑特殊部分↑ #########################
 
   build:
     needs: base
@@ -74,18 +79,19 @@ jobs:
         name: Prepare
         id: prepare
         run: |
+          DOCKERHUB_REPOSITORY="${{ secrets.DOCKER_USERNAME }}/${IMAGE_NAME}"
           FULL_VERSION="${{ needs.base.outputs.full_version }}"
-          DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}"
           ARCH="${{ matrix.architecture }}"
+          TAGS="${DOCKERHUB_REPOSITORY}:${FULL_VERSION}-$(echo ${ARCH} | perl -pe '{s|linux/||g; s|/|-|g}')"
           
+          ######################### ↓特殊部分↓ #########################
           ## 修改LIBTORRENT的基础版本
           if [[ ${FULL_VERSION} == 4.3* ]]; then
             perl -i -pe "s|LIBTORRENT_MAJOR_VERSION|1|" ${IMAGE_NAME}/${DOCKERFILE_NAME}
           else
             perl -i -pe "s|LIBTORRENT_MAJOR_VERSION|2|" ${IMAGE_NAME}/${DOCKERFILE_NAME}
           fi
-
-          TAGS="${DOCKER_USERNAME}/${IMAGE_NAME}:${FULL_VERSION}-$(echo ${ARCH} | perl -pe '{s|linux/||g; s|/|-|g}')"
+          ######################### ↑特殊部分↑ #########################
 
           echo ::set-output name=tags::${TAGS}
 
@@ -145,20 +151,20 @@ jobs:
           echo ALL_ARCH[@]=${ALL_ARCH[@]}
           
           IMAGES=()
-          for arch in ${ALL_ARCH[@]}; do \
-            IMAGES+=( "${DOCKERHUB_REPOSITORY}:${FULL_VERSION}-${arch}" ); \
+          for arch in ${ALL_ARCH[@]}; do
+            IMAGES+=( "${DOCKERHUB_REPOSITORY}:${FULL_VERSION}-${arch}" )
           done
 
           echo IMAGES[@]=${IMAGES[@]}
 
-          for tag in ${MULTITAGS}; do \
-            docker manifest create "${DOCKERHUB_REPOSITORY}:${tag}" "${IMAGES[@]}"; \
+          for tag in ${MULTITAGS}; do
+            docker manifest create "${DOCKERHUB_REPOSITORY}:${tag}" "${IMAGES[@]}"
           done
 
           echo MULTITAGS=${MULTITAGS}
 
-          for tag in ${MULTITAGS}; do \
-            docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"; \
+          for tag in ${MULTITAGS}; do
+            docker manifest push --purge "${DOCKERHUB_REPOSITORY}:${tag}"
           done
 
       - 
