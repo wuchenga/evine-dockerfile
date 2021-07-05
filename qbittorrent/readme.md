@@ -61,11 +61,13 @@ docker run -dit \
   nevinee/qbittorrent
 ```
 
+- 除`TZ` `WEBUI_PORT` `BT_PORT`这三个环境变量外，其他环境变量请根据[环境变量清单](#环境变量清单)自行添加。
+
 - armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。可以增加`--security-opt seccomp=unconfined` 来解决。
 
 - 创建完成后请访问`http://<IP>:<WEBUI_PORT>`来作进一步设置，初始用户名密码：`admin/adminadmin`。如要在公网访问，请务必修改用户名和密码。
 
-- 如想参与qbittorrent测试工作，可以指定测试标签，如`nevinee/qbittorrent:4.4.0beta1`。
+- 如想参与qbittorrent测试工作，可以指定测试标签，如`nevinee/qbittorrent:4.4.0beta1`，请向qbittorrent官方反馈遇到的问题。
 
 **docker-compose**
 
@@ -129,11 +131,13 @@ networks:
     external: true
 ```
 
+- 除`TZ` `WEBUI_PORT` `BT_PORT`这三个环境变量外，其他环境变量请根据[环境变量清单](#环境变量清单)自行添加。
+
 - armv7设备如若无法使用网络，可能是seccomp问题，详见 [这里](https://wiki.alpinelinux.org/wiki/Release_Notes_for_Alpine_3.13.0#time64_requirements)。
 
 - 创建完成后请访问`http://<IP>:<WEBUI_PORT>`来作进一步设置，初始用户名密码：`admin/adminadmin`。如要在公网访问，请务必修改用户名和密码。
 
-- 如想参与qbittorrent测试工作，可以指定测试标签，如`nevinee/qbittorrent:4.4.0beta1`。
+- 如想参与qbittorrent测试工作，可以指定测试标签，如`nevinee/qbittorrent:4.4.0beta1`，如遇到问题请向qbittorrent官方反馈。
 
 ## 目录说明
 
