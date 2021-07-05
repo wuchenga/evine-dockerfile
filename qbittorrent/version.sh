@@ -21,6 +21,13 @@ ver_qbbeta_local=$(cat qbittorrent-beta.version)
 
 cmd_dispatches="curl -X POST -H \"Accept: application/vnd.github.v3+json\" -H \"Authorization: token ${GITHUB_MIRROR_TOKEN}\" https://api.github.com/repos/nevinen/dockerfiles/dispatches"
 
+## 触发同步仓库
+if [[ $ver_qb_official ]] || [[ $ver_qbbeta_official ]]; then
+    if [[ $ver_qb_official != $ver_qb_local || $ver_qbbeta_official != $ver_qbbeta_local ]]; then
+        $cmd_dispatches -d '{"event_type":"mirror"}'
+    fi
+fi
+
 ## 检测官方版本与本地版本是否一致，如不一致则触发Github Action构建镜像
 if [[ $ver_qb_official ]]; then
     if [[ $ver_qb_official != $ver_qb_local ]]; then
