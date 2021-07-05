@@ -25,7 +25,8 @@ cmd_dispatches="curl -X POST -H \"Accept: application/vnd.github.v3+json\" -H \"
 if [[ $ver_qb_official ]]; then
     if [[ $ver_qb_official != $ver_qb_local ]]; then
         echo "官方已升级qBittorrent版本至：$ver_qb_official，开始触发Github Action..."
-        $cmd_dispatches -d '{"event_type":"qbittorrent"}'
+        # $cmd_dispatches -d '{"event_type":"qbittorrent"}'  ## 改用gh workflow触发
+        gh workflow run qbittorrent.yml -f version=$ver_qb_official
         [[ $? -eq 0 ]] && {
             echo "$ver_qb_official" > qbittorrent.version
             notify "qBittorrent已经升级" "当前官方版本: ${ver_qb_official}\n当前本地版本: ${ver_qb_local}\n已经向 Github Action 触发构建程序"
@@ -34,11 +35,12 @@ if [[ $ver_qb_official ]]; then
         echo "qBittorrent官方版本和本地一致，均为：$ver_qb_official"
     fi
 fi
-
+sleep 3
 if [[ $ver_qbbeta_official ]]; then
     if [[ $ver_qbbeta_official != $ver_qbbeta_local ]]; then
         echo "官方已升级qBittorrent beta版本至：$ver_qbbeta_official，开始触发Github Action..."
-        $cmd_dispatches -d '{"event_type":"qbittorrent-beta"}'
+        # $cmd_dispatches -d '{"event_type":"qbittorrent-beta"}'  ## 改用gh workflow触发
+        gh workflow run qbittorrent.yml -f version=$ver_qbbeta_official
         [[ $? -eq 0 ]] && {
             echo "$ver_qbbeta_official" > qbittorrent-beta.version
             notify "qBittorrent beta已经升级" "当前官方版本: ${ver_qbbeta_official}\n当前本地版本: ${ver_qbbeta_local}\n已经向 Github Action 触发构建程序"
