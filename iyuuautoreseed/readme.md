@@ -22,3 +22,9 @@ services:
 ```
 
 创建好后编辑`./iyuuautoreseed/config.php`即可，不负责解释一切疑问。
+
+## 构建相关
+
+https://github.com/nevinen/dockerfiles/tree/master/iyuuautoreseed
+
+https://github.com/nevinen/dockerfiles/tree/master/.github/workflows
