@@ -1,6 +1,6 @@
 ## 简介
 
-https://github.com/ledccn/IYUUAutoReseed，官方提供了Docker镜像的，建议选择官方的镜像。本镜像主要是为了本人使用方便。
+https://github.com/ledccn/IYUUAutoReseed ，官方提供了Docker镜像的，建议选择官方的镜像。本镜像主要是为了本人使用方便。
 
 ## 本镜像创建
 
