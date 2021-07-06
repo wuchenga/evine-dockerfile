@@ -1,4 +1,4 @@
-name: 同步qBittorrent仓库到Gitee
+name: 同步qBittorrent仓库
 
 on:
   #schedule:

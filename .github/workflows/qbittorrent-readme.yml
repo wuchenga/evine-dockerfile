@@ -1,4 +1,4 @@
-name: 更新qb在hub上的描述页
+name: 更新qBittorrent介绍
 on:
   push:
     branches:

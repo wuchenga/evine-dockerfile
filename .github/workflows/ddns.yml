@@ -1,4 +1,4 @@
-name: "构建DDNS"
+name: 构建DDNS镜像
 on:
   workflow_dispatch:
 

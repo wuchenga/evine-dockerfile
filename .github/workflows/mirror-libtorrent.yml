@@ -1,4 +1,4 @@
-name: 同步libtorrent仓库到Gitee
+name: 同步libtorrent仓库
 
 on:
   #schedule:

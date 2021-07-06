@@ -1,13 +1,13 @@
-name: 构建Alpine-S6镜像
+name: 构建IYUUAutoReseed镜像
 on:
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: 构建多平台镜像
+    name: 构建IYUUAutoReseed
     env:
-      IMAGE_NAME: alpine-s6
+      IMAGE_NAME: iyuuautoreseed
     steps:
       - 
         name: Checkout
@@ -42,15 +42,6 @@ jobs:
         with:
           context: ${{ env.IMAGE_NAME }}
           file: ${{ env.IMAGE_NAME }}/Dockerfile
-          platforms: |
-            linux/386
-            linux/amd64
-            linux/arm64
-            linux/arm/v7
-            linux/arm/v6
-            linux/ppc64le
-            linux/s390x
+          platforms: linux/386,linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6,linux/ppc64le,linux/s390x
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
-            ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:3.14
+          tags: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
