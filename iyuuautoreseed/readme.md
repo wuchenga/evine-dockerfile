@@ -21,7 +21,7 @@ services:
       - CRON_IYUU=51 7,19 * * *        # 辅种程序的cron
 ```
 
-创建好后编辑`./iyuuautoreseed/config.php`即可，不负责解释一切疑问。
+创建好后编辑`./userdata/config.php`即可，不负责解释一切疑问。
 
 ## 构建相关
 
