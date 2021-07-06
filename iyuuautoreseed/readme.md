@@ -15,7 +15,7 @@ services:
     hostname: iyuuautoreseed
     volumes:
       - ./userdata:/userdata           # 配置目录
-      ./torrent:/iyuu/torrent          # 辅种缓存目录
+      - ./torrent:/iyuu/torrent        # 辅种缓存目录
     environment:
       - CRON_GIT_PULL=23 6,19 * * *    # 更新脚本的cron
       - CRON_IYUU=51 7,19 * * *        # 辅种程序的cron
