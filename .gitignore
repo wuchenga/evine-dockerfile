@@ -1,3 +1,4 @@
 /log
 /libtorrent-rasterbar/libtorrent-*
 /qbittorrent/qBittorrent-*
+*.version
