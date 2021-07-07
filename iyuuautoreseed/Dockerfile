@@ -20,7 +20,6 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories 
        php7-simplexml \
        php7-zip \
        php7-xml \
-    && git clone https://gitee.com/ledc/IYUUAutoReseed.git /iyuu \
     && { \
         echo "upload_max_filesize=100M"; \
         echo "post_max_size=108M"; \

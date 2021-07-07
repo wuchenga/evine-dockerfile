@@ -2,7 +2,7 @@
 
 set_cron() {
     if [[ -z ${CRON_GIT_PULL} ]]; then
-        CRON_GIT_PULL="23 6,19 * * *"
+        CRON_GIT_PULL="23 7,19 * * *"
     fi
 
     if [[ -z ${CRON_IYUU} ]]; then

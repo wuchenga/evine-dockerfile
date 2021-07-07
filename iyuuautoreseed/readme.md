@@ -14,14 +14,13 @@ services:
     network_mode: bridge
     hostname: iyuuautoreseed
     volumes:
-      - ./userdata:/userdata           # 配置目录
-      - ./torrent:/iyuu/torrent        # 辅种缓存目录
+      - ./iyuu:/iyuu
     environment:
-      - CRON_GIT_PULL=23 6,19 * * *    # 更新脚本的cron
+      - CRON_GIT_PULL=23 7,19 * * *    # 更新脚本的cron
       - CRON_IYUU=51 7,19 * * *        # 辅种程序的cron
 ```
 
-创建好后编辑`./userdata/config.php`即可，不负责解释一切疑问。
+创建好后编辑`./iyuu/config/config.php`即可，不负责解释一切疑问。
 
 ## 构建相关
 
