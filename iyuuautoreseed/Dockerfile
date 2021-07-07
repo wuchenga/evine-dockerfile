@@ -35,5 +35,5 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories 
        /usr/share/php7
 COPY s6-overlay /
 WORKDIR /iyuu
-VOLUME /userdata
+VOLUME /iyuu
 ENTRYPOINT ["/init"]
