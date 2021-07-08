@@ -14,7 +14,7 @@ services:
     network_mode: bridge
     hostname: iyuuautoreseed
     volumes:
-      - ./iyuu:/iyuu
+      - ./iyuu:/iyuu  # 首次启动前映射的iyuu文件夹必须是空的
     environment:
       - CRON_GIT_PULL=23 7,19 * * *    # 更新脚本的cron
       - CRON_IYUU=51 7,19 * * *        # 辅种程序的cron
