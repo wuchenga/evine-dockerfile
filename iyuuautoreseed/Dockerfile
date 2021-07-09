@@ -6,8 +6,7 @@ ENV APP_ENV=prod \
     LANG=zh_CN.UTF-8 \
     PS1="\u@\h:\w \$ "
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
-    && apk update \
-    && apk add --no-cache \
+    && apk add --no-cache --update \
        s6-overlay \
        bash \
        git \
