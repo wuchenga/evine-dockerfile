@@ -20,7 +20,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories 
        php7-simplexml \
        php7-zip \
        php7-xml \
-    && echo "upload_max_filesize=100M\npost_max_size=108M\nmemory_limit=1024M\ndate.timezone=${TIMEZONE}" > /etc/php7/conf.d/99-overrides.ini \
+    && echo -e "upload_max_filesize=100M\npost_max_size=108M\nmemory_limit=1024M\ndate.timezone=${TIMEZONE}" > /etc/php7/conf.d/99-overrides.ini \
     && ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime \
     && echo "${TIMEZONE}" > /etc/timezone \
     && rm -rf \
