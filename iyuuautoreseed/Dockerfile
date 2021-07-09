@@ -5,7 +5,7 @@ ARG TIMEZONE=Asia/Shanghai
 ENV APP_ENV=prod \
     LANG=zh_CN.UTF-8 \
     PS1="\u@\h:\w \$ "
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/' /etc/apk/repositories \
     && apk add --no-cache --update \
        s6-overlay \
        bash \
