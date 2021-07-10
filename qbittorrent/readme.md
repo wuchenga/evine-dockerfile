@@ -236,6 +236,94 @@ docker-compose:
       com.centurylinklabs.watchtower.enable: false
 ```
 
+**为何建议将qbittorrent安装在macvlan网络上**
+
+- 可以在网关上给qbittorrent所在ip独立设置限速; 
+
+- 如果有用openwrt时，可以让qbittorrent所在ip跳过代理。
+
+**将qbittorrent安装在macvlan网络上时，如何使用IYUUAutoReseed自动辅种**
+
+将两个容器都安装在同一个macvlan网络上即可，下面是本人两个容器的docker-compose.yml，供参考。
+
+*qbittorrent*
+
+```
+version: "2.0"
+services:
+  qbittorrent:
+    image: nevinee/qbittorrent
+    container_name: qbittorrent
+    restart: always
+    networks: 
+      mymacvlan:
+        ipv4_address: 10.0.0.141
+        aliases:
+          - qbittorrent
+    dns:
+      - 10.0.0.1
+      - 223.5.5.5
+    hostname: qbittorrent
+    volumes:
+      - /root/appdata/qbittorrent:/data
+      - /srv/dev-disk-by-uuid-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/multimedia/movies:/movies
+      - /srv/dev-disk-by-uuid-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/multimedia/tv:/tv
+      - /srv/dev-disk-by-uuid-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/multimedia/ebook:/ebook
+      - /srv/dev-disk-by-uuid-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/multimedia/music:/music
+      - /srv/dev-disk-by-uuid-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/multimedia/software:/software
+      - /srv/dev-disk-by-uuid-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/multimedia/video:/video
+    environment:
+      - PUID=1000
+      - PGID=100
+      - WEBUI_PORT=8087
+      - BT_PORT=22222
+      - TZ=Asia/Shanghai
+      - INSTALL_PYTHON=true
+      - UMASK_SET=022
+      - CRON_HEALTH_CHECK=12 * * * *
+      - CRON_AUTO_CATEGORY=32 * * * *
+      - CRON_TRACKER_ERROR=52 * * * *
+      - DL_FINISH_NOTIFY=true
+    labels:
+      com.centurylinklabs.watchtower.enable: false
+
+networks: 
+  mymacvlan:
+    external: true
+```
+
+*iyuuautoreseed*
+
+```
+version: "2.0"
+services:
+  iyuu:
+    image: nevinee/iyuuautoreseed
+    container_name: iyuu
+    restart: always
+    networks: 
+      mymacvlan:
+        ipv4_address: 10.0.0.149
+        aliases:
+          - iyuu
+    hostname: iyuu
+    dns:
+      - 10.0.0.1
+      - 223.5.5.5
+    extra_hosts:
+      - "qb.example.com:10.0.0.141"    # qbittorrent使用了ssl证书的话，给它指定这个域名对应的ip
+    volumes:
+      - /root/appdata/iyuu:/iyuu
+      - /root/appdata/qbittorrent:/qbittorrent
+    environment:
+      - CRON_GIT_PULL=23 7,19 * * *    # 更新脚本的cron
+      - CRON_IYUU=51 7,19 * * *        # 辅种程序的cron
+
+networks: 
+  mymacvlan:
+    external: true
+```
+
 ## 命令
 
 ```
