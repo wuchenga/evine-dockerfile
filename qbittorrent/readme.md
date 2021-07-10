@@ -280,9 +280,11 @@ services:
       - TZ=Asia/Shanghai
       - INSTALL_PYTHON=true
       - UMASK_SET=022
-      - CRON_HEALTH_CHECK=12 * * * *
-      - CRON_AUTO_CATEGORY=32 * * * *
-      - CRON_TRACKER_ERROR=52 * * * *
+      - DD_BOT_TOKEN=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      - DD_BOT_SECRET=SECxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      - CRON_HEALTH_CHECK=16 * * * *
+      - CRON_AUTO_CATEGORY=26 2 * * *
+      - CRON_TRACKER_ERROR=46 3 * * *
       - DL_FINISH_NOTIFY=true
     labels:
       com.centurylinklabs.watchtower.enable: false
