@@ -33,8 +33,7 @@ ENV QBITTORRENT_HOME="/home/qbittorrent" \
     PGID="1500" \
     LANG=zh_CN.UTF-8 \
     SHELL=/bin/bash \
-    PS1="\u@\h:\w \$ " \
-    TRACKER_ERROR_COUNT_MIN=1
+    PS1="\u@\h:\w \$ "
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
     && apk add --update --no-cache \
        curl \
