@@ -8,7 +8,7 @@ dir_myscripts=$(cd $(dirname $0); cd ../../myscripts; pwd)
 cd $dir_shell
 
 ## 官方版本
-qb_tag=$(curl -s https://api.github.com/repos/qbittorrent/qBittorrent/tags)
+qb_tag=$(curl -s --retry 5 --retry-delay 8 https://api.github.com/repos/qbittorrent/qBittorrent/tags)
 ver_qb_official=$(echo $qb_tag | jq -r .[].name | grep -m1 -E "release-([0-9]\.?){3,4}$" | sed "s/release-//")
 ver_qbbeta_official=$(echo $qb_tag | jq -r .[].name | grep -m1 -E "release-([0-9]\.?){3,4}[a-zA-Z]+.*" | sed "s/release-//")
 
