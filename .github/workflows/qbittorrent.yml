@@ -87,7 +87,7 @@ jobs:
           
           ######################### ↓特殊部分↓ #########################
           ## 修改LIBTORRENT的基础版本
-          if [[ ${FULL_VERSION} == 4.3* ]]; then
+          if [[ $(echo ${FULL_VERSION} | awk -F '.' '{print $2}') -le 3 ]]; then
             perl -i -pe "s|LIBTORRENT_MAJOR_VERSION|1|" ${IMAGE_NAME}/${DOCKERFILE_NAME}
           else
             perl -i -pe "s|LIBTORRENT_MAJOR_VERSION|2|" ${IMAGE_NAME}/${DOCKERFILE_NAME}
