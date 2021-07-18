@@ -10,7 +10,7 @@ RUN apk update \
        build-base \
        openssl-dev \
        cmake \
-       ninja \
+       samurai \
        git \
     && cd /tmp \
     && git clone --branch v${LIBTORRENT_VERSION} --recurse-submodules https://github.com/arvidn/libtorrent \

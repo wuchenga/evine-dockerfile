@@ -3,21 +3,28 @@
 
 FROM nevinee/libtorrent-rasterbar:LIBTORRENT_MAJOR_VERSION AS builder
 RUN apk add --update --no-cache \
-       autoconf \
-       automake \
        boost-dev \
        build-base \
-       libtool \
        qt5-qttools-dev \
        git \
+       cmake \
+       samurai \
     && rm -rf /tmp/* /var/cache/apk/*
 ARG QBITTORRENT_VERSION
 RUN cd /tmp \
     && git clone --branch release-${QBITTORRENT_VERSION} https://github.com/qbittorrent/qBittorrent \
     && cd qBittorrent \
-    && ./configure CXXFLAGS="-std=c++17" --disable-gui \
-    && make -j$(nproc) \
-    && make install \
+    && cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DVERBOSE_CONFIGURE=ON \
+        -DDBUS=OFF \
+        -DGUI=OFF \
+        -B release \
+        -G Ninja \
+    && cd release \
+    && ninja -j $(nproc) \
+    && ninja install \
     && ls -al /usr/local/bin/ \
     && qbittorrent-nox --help
 RUN mkdir /out \
