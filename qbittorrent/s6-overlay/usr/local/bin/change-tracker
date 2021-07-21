@@ -21,24 +21,17 @@ handle_all_match_torrents() {
     for hash in ${hashes[@]}; do
         trackers_url=( $($cmd_curl $api_url_base/torrents/trackers?hash=$hash | jq -r .[].url | sed "s# #_#g") )
         for ((n = $((${#trackers_url[*]} - 1)); n >= 0; n--)); do
-            case $method in
-                exact)
-                    if [[ ${trackers_url[n]} == ${tracker_orig_url} ]]; then
-                        change_tracker $hash $tracker_orig_url $tracker_new_url
-                        let change_count++
-                        break
-                    fi
-                    ;;
-                blur)
-                    if [[ ${trackers_url[n]} == *${orig_string}* ]]; then
-                        tracker_orig_url=${trackers_url[n]}
-                        tracker_new_url=$(echo ${trackers_url[n]} | sed "s#${orig_string}#${new_string}#")
-                        change_tracker $hash $tracker_orig_url $tracker_new_url
-                        let change_count++
-                        break
-                    fi
-                    ;;
-            esac
+            if [[ $method == exact && ${trackers_url[n]} == ${tracker_orig_url} ]]; then
+                change_tracker $hash $tracker_orig_url $tracker_new_url
+                let change_count++
+                break
+            elif [[ $method == blur && ${trackers_url[n]} == *${orig_string}* ]]; then
+                tracker_orig_url=${trackers_url[n]}
+                tracker_new_url=$(echo ${trackers_url[n]} | sed "s#${orig_string}#${new_string}#")
+                change_tracker $hash $tracker_orig_url $tracker_new_url
+                let change_count++
+                break
+            fi
         done
     done
     echo -e "\n共修改了${change_count}个种子的tracker，程序运行完成"
