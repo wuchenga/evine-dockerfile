@@ -14,7 +14,11 @@ set_crontab() {
     fi
 
     echo "Set crontab to system..."
-    echo -e "${CRON_HEALTH_CHECK} health-check\n${CRON_AUTO_CATEGORY} auto-cat -a\n${CRON_TRACKER_ERROR} tracker-error" | crontab -
+    if [[ $ENABLE_AUTO_CATEGORY != false ]]; then
+        echo -e "${CRON_HEALTH_CHECK} health-check\n${CRON_AUTO_CATEGORY} auto-cat -a\n${CRON_TRACKER_ERROR} tracker-error" | crontab -
+    else
+        echo -e "${CRON_HEALTH_CHECK} health-check\n${CRON_TRACKER_ERROR} tracker-error" | crontab -
+    fi
 }
 
 set_crontab 2>&1 | sed "s#^#[cont-init.d] $(basename $0): \1#g"

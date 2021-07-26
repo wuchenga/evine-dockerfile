@@ -24,10 +24,12 @@ category_one() {
 category_all() {
     local hashes=( $($cmd_curl ${api_url_base}/torrents/info | jq -r .[].hash) )
 
-    for hash in "${hashes[@]}"; do
-        category_one "$hash"
-        sleep 1
-    done
+    if [[ $ENABLE_AUTO_CATEGORY != false ]]; then
+        for hash in "${hashes[@]}"; do
+            category_one "$hash"
+            sleep 1
+        done
+    fi
 }
 
 usage() {

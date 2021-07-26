@@ -42,6 +42,23 @@
 |  16 | CRON_TRACKER_ERROR | 52 */4 * * *  | 检查tracker状态是否健康的cron，在设定的cron将检查所有种子的tracker状态，如果有问题就打上`TrackerError`的标签，在docker cli中请用一对双引号引起来，在docker-compose中不要增加引号。对于种子很多的大户人家，建议把cron频率修改低一些，一天一次即可。 |
 |  17 | DL_FINISH_NOTIFY   | true          | 默认会在下载完成时向设定的通知渠道发送种子下载完成的通知消息，如不想收此类通知，则输入`false` |
 
+## 尚在测试中的内容
+
+以下功能和环境变量已集成在beta版的qbittorrent中，在下一个正式版qbittorrent发布时会整合进去。
+
+**新功能或原有功能修复**
+
+- 增加批量修改tracker的功能：`docker exec -it qbittorrent change-tracker`；
+
+- 修复原有通知渠道爱语飞飞的报错。
+
+**新环境变量**
+
+| 序号 | 变量名                  | 默认值        | 说明 |
+| :-: | :-:                     | :-:           | -    |
+|  1  | TRACKER_ERROR_COUNT_MIN | 3             | 可以设置的值：正整数。在检测到tracker出错的种子数量超过这个阈值时，给设置的通知渠道发送通知。 |
+|  2  | ENABLE_AUTO_CATEGORY    | true          | 是否自动分类，默认自动分类，如不想自动分类，请设置为`false`。 |
+
 ## 创建
 
 **docker cli**
