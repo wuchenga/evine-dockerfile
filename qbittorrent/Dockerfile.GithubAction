@@ -17,7 +17,7 @@ RUN cd /tmp \
     && cmake \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_CXX_STANDARD=17 \
-        -DVERBOSE_CONFIGURE=ON \
+        -DVERBOSE_CONFIGURE=OFF \
         -DSTACKTRACE=OFF \
         -DDBUS=OFF \
         -DGUI=OFF \
@@ -28,7 +28,10 @@ RUN cd /tmp \
     && ninja install \
     && ls -al /usr/local/bin/ \
     && qbittorrent-nox --help
-RUN mkdir /out \
+RUN echo "Copy to /out" \
+    && strip /usr/local/lib/libtorrent-rasterbar.so.* \
+    && strip /usr/local/bin/qbittorrent-nox \
+    && mkdir /out \
     && mkdir -p /out/usr/lib \
     && mkdir -p /out/usr/bin \
     && cp -d /usr/local/lib/libtorrent-rasterbar.so* /out/usr/lib \

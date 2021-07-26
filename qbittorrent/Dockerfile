@@ -14,13 +14,23 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 ARG QBITTORRENT_VERSION
 COPY qBittorrent-${QBITTORRENT_VERSION} /tmp/qBittorrent
 RUN cd /tmp/qBittorrent \
-    && ls -al \
-    && ./configure CXXFLAGS="-std=c++17" --disable-gui \
-    && make -j$(nproc) \
-    && make install \
+    && cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CXX_STANDARD=17 \
+        -DSTACKTRACE=OFF \
+        -DDBUS=OFF \
+        -DGUI=OFF \
+        -B release \
+        -G Ninja \
+    && cd release \
+    && ninja -j 1 \
+    && ninja install \
     && ls -al /usr/local/bin/ \
     && qbittorrent-nox --help
-RUN mkdir /out \
+RUN echo "Copy to /out" \
+    && strip /usr/local/lib/libtorrent-rasterbar.so.* \
+    && strip /usr/local/bin/qbittorrent-nox \
+    && mkdir /out \
     && mkdir -p /out/usr/lib \
     && mkdir -p /out/usr/bin \
     && cp -d /usr/local/lib/libtorrent-rasterbar.so* /out/usr/lib \
