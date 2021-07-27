@@ -52,6 +52,8 @@
 
 - 增加批量修改tracker的功能：`docker exec -it qbittorrent change-tracker`；
 
+- 增加在运行`dl-finish "%I"`时调用自定义脚本的功能，只要你将名为`diy.sh`的shell脚本放在映射目录下的`diy`文件夹（可能需要自建此文件夹）下即可，容器内路径为`data/diy/diy.sh`，假如你要调用其他语言的脚本，比如python，可以在`diy.sh`中写上`python3 /data/diy/your_python_scripts.py`即可。
+
 - 修复原有通知渠道爱语飞飞的报错。
 
 **新环境变量**

@@ -4,7 +4,7 @@ make_dir() {
     echo "Make some folders..."
     
     cd /data
-    local dirs1=( cache certs config data/logs downloads temp torrents watch webui ${QBITTORRENT_HOME}/qBittorrent )
+    local dirs1=( cache certs config data/logs downloads diy temp torrents watch webui ${QBITTORRENT_HOME}/qBittorrent )
     for dir in ${dirs1[@]}; do
         [ ! -d $dir ] && mkdir -p $dir
     done

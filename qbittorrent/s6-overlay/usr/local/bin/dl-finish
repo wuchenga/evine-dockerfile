@@ -31,10 +31,15 @@ else
     else
         echo "(N) $(date +'%Y-%m-%dT%H:%M:%S') - [$(basename $0)] 已设置为不自动分类..."
     fi
+    
     if [[ $DL_FINISH_NOTIFY != false ]]; then
         echo "(N) $(date +'%Y-%m-%dT%H:%M:%S') - [$(basename $0)] 发送种子下载完成的通知消息..."
         send_notify "$torrent_hash"
     else
         echo "(W) $(date +'%Y-%m-%dT%H:%M:%S') - [$(basename $0)] 已设置为不发送种子下载完成的通知消息..."
+    fi
+
+    if [[ -f /data/diy/diy.sh ]]; then
+        . /data/diy/diy.sh
     fi
 fi
