@@ -17,7 +17,9 @@ send_notify() {
     local completion_date_format=$(date +'%Y-%m-%d %H:%M:%S' -d @$completion_date)
     local download_time=$(nice-time $(($completion_date - $addition_date)))
 
-    notify "种子下载完成" "种子名称：$torrent_name\n保存路径：$save_path\n种子分类：$category\n选定大小：$size\n文件数量：$files_sum\n开始时间：$addition_date_format\n完成时间：$completion_date_format\n下载用时：$download_time\n"
+    if [[ $torrent_name ]]; then
+        notify "种子下载完成" "种子名称：$torrent_name\n保存路径：$save_path\n种子分类：$category\n选定大小：$size\n文件数量：$files_sum\n开始时间：$addition_date_format\n完成时间：$completion_date_format\n下载用时：$download_time\n"
+    fi
 }
 
 torrent_hash="$1"   ## hash必须是第一个传入参数
