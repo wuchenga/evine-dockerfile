@@ -52,7 +52,7 @@
 
 - 增加批量修改tracker的功能：`docker exec -it qbittorrent change-tracker`；
 
-- 增加在运行`dl-finish "%I"`时调用自定义脚本的功能，只要你将名为`diy.sh`的shell脚本放在映射目录下的`diy`文件夹（可能需要自建此文件夹）下即可，容器内路径为`/data/diy/diy.sh`（hash已存储在名为torrent_hash的变量中，可通过此值获取其他信息），假如你要调用其他语言的脚本，比如python，可以在`diy.sh`中写上`python3 /data/diy/your_python_scripts.py $torrent_hash`即可，传递的只有种子hash，其他信息需凭借`$torrent_hash`的值通过qbittorrent的api获取。
+- 增加在运行`dl-finish "%I"`时调用自定义脚本的功能，只要你将名为`diy.sh`的shell脚本放在映射目录下的`diy`文件夹（可能需要自建此文件夹）下即可，容器内路径为`/data/diy/diy.sh`（hash已存储在名为torrent_hash的变量中，可通过此值获取其他信息），假如你要调用其他语言的脚本，比如python，可以在`diy.sh`中写上`python3 /data/diy/your_python_scripts.py $torrent_hash`即可，传递的只有种子hash，其他信息需凭借`$torrent_hash`的值通过qbittorrent的api获取。还可以参考 [这个](https://github.com/nevinen/dockerfiles/issues/3#issuecomment-887309444) 办法：
 
 - 修复原有通知渠道爱语飞飞的报错。
 
