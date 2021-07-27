@@ -20,11 +20,11 @@ send_notify() {
     notify "种子下载完成" "种子名称：$torrent_name\n保存路径：$save_path\n种子分类：$category\n选定大小：$size\n文件数量：$files_sum\n开始时间：$addition_date_format\n完成时间：$completion_date_format\n下载用时：$download_time\n"
 }
 
-if [[ $# -ne 1 ]]; then
-    echo "(W) $(date +'%Y-%m-%dT%H:%M:%S') - [$(basename $0)] 传入参数不正确，请只传入HASH值，形如：dl-finish \"%I\"..."
+if [[ $# -eq 0 ]]; then
+    echo "(W) $(date +'%Y-%m-%dT%H:%M:%S') - [$(basename $0)] 传入参数不正确，请传入HASH值，形如：dl-finish \"%I\"..."
 else
     . /usr/local/bin/share
-    torrent_hash="$1"
+    torrent_hash="$1"   ## hash必须是第一个传入参数
     if [[ $ENABLE_AUTO_CATEGORY != false ]]; then
         echo "(N) $(date +'%Y-%m-%dT%H:%M:%S') - [$(basename $0)] 将刚下载完成的种子进行分类..."
         auto-cat -i "$torrent_hash"
