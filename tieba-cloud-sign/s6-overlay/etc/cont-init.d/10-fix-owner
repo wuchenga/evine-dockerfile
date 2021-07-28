@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv bash
+
+fix_owner() {
+    echo "Change $WORKDIR owner to user caddy..."
+    chown -R caddy:caddy $WORKDIR
+}
+
+fix_owner 2>&1 | sed "s#^#[cont-init.d] $(basename $0): \1#g"
