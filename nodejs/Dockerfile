@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM alpine
 LABEL maintainer="Evine Deng <evinedeng@foxmail.com>"
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     HOME=/root \
@@ -10,6 +10,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     && apk --no-cache add -f \
        bash \
        s6-overlay \
+       nodejs \
        openssl \
        coreutils \
        moreutils \
