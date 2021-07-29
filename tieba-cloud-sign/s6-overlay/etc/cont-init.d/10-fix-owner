@@ -1,7 +1,13 @@
 #!/usr/bin/with-contenv bash
 
 fix_owner() {
+    PUID=${PUID:-1000}
+    PGID=${PGID:-1000}
     echo "Change $WORKDIR owner to user caddy..."
+    echo "PUID=${PUID}"
+    echo "PGID=${PGID}"
+    groupmod -o -g "$PGID" caddy
+    usermod -o -u "$PUID" caddy
     chown -R caddy:caddy $WORKDIR
 }
 
