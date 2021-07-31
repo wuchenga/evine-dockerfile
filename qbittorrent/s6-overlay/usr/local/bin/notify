@@ -24,8 +24,21 @@ notify_telegram () {
     local message="$(echo -e $1)"
     local tg_api_url="https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage"
     local send_result err_code err_message
+    local cmd_proxy_user cmd_proxy
 
-    send_result=$(curl -Ssk -H "Content-Type:application/x-www-form-urlencoded" -X POST -d "chat_id=${TG_USER_ID}&text=${message}&disable_web_page_preview=true" "$tg_api_url")
+    if [[ $TG_PROXY_USER ]]; then
+        cmd_proxy_user="--proxy-user ${TG_PROXY_USER}"
+    else
+        cmd_proxy_user=""
+    fi
+
+    if [[ $TG_PROXY_ADDRESS ]]; then
+        cmd_proxy="--proxy $TG_PROXY_ADDRESS $cmd_proxy_user"
+    else
+        cmd_proxy=""
+    fi
+
+    send_result=$(curl -Ssk $cmd_proxy -H "Content-Type:application/x-www-form-urlencoded" -X POST -d "chat_id=${TG_USER_ID}&text=${message}&disable_web_page_preview=true" "$tg_api_url")
     send_result=$(echo "$send_result" | sed '{:label; N; s/\n/\\n/g; b label; s/\\n$//}')
     err_code=$(echo "$send_result" | jq .ok)
     if [[ $err_code == true ]]; then

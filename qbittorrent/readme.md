@@ -52,7 +52,7 @@
 
 - 增加批量修改tracker的功能：`docker exec -it qbittorrent change-tracker`；
 
-- 增加在运行`dl-finish "%I"`时调用自定义脚本的功能，只要你将名为`diy.sh`的shell脚本放在映射目录下的`diy`文件夹（可能需要自建此文件夹）下即可，容器内路径为`/data/diy/diy.sh`（hash已存储在名为torrent_hash的变量中，可通过此值获取其他信息），假如你要调用其他语言的脚本，比如python，可以在`diy.sh`中写上`python3 /data/diy/your_python_scripts.py $torrent_hash`即可，传递的只有种子hash，其他信息需凭借`$torrent_hash`的值通过qbittorrent的api获取。还可以参考 [这个](https://github.com/nevinen/dockerfiles/issues/3#issuecomment-887309444) 办法：
+- 增加在运行`dl-finish "%I"`时调用自定义脚本的功能，只要你将名为`diy.sh`的shell脚本放在映射目录下的`diy`文件夹（可能需要自建此文件夹）下即可，容器内路径为`/data/diy/diy.sh`（hash已存储在名为torrent_hash的变量中，可通过此值获取其他信息）。假如你要调用其他语言的脚本，比如python，可以在`diy.sh`中写上`python3 /data/diy/your_python_scripts.py $torrent_hash`即可，传递的只有种子hash，其他信息需凭借`$torrent_hash`的值通过qbittorrent的api获取。还可以参考 [这个](https://github.com/nevinen/dockerfiles/issues/3#issuecomment-887309444) 办法。
 
 - 修复原有通知渠道爱语飞飞的报错。
 
@@ -62,6 +62,8 @@
 | :-: | :-:                     | :-:           | -    |
 |  1  | TRACKER_ERROR_COUNT_MIN | 3             | 可以设置的值：正整数。在检测到tracker出错的种子数量超过这个阈值时，给设置的通知渠道发送通知。 |
 |  2  | ENABLE_AUTO_CATEGORY    | true          | 是否自动分类，默认自动分类，如不想自动分类，请设置为`false`。 |
+|  3  | TG_PROXY_ADDRESS        |               | 给TG机器人发送消息的代理地址，当设置了`TG_USER_ID`和`TG_BOT_TOKEN`后可以设置此值，形如：`http://192.168.1.1:7890`，也可以不设置。 |
+|  4  | TG_PROXY_USER           |               | 给TG机器人发送消息的代理的用户名和密码，当设置了`TG_PROXY_ADDRESS`后可以设置此值，格式为：`<用户名>:<密码>`，形如：`admin:password`，如没有可不设置。 |
 
 ## 创建
 
